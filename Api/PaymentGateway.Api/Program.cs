@@ -15,6 +15,8 @@ builder.Services.AddService(builder.Configuration, x =>
 
 var app = builder.Build();
 
+app.MapGet("/payment", () => { }); //TODO:?
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

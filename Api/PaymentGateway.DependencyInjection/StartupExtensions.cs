@@ -31,5 +31,7 @@ public static class StartupExtensions
         return services;
     }
 
-    //TODO: Add polly
+    //TODO:
+    //Add polly
+    //Validate config   
 }

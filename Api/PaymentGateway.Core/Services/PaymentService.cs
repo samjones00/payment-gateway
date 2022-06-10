@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using PaymentGateway.Domain;
 using PaymentGateway.Domain.Interfaces;
+using PaymentGateway.Domain.Models;
 
 namespace PaymentGateway.Core.Services;
 public class PaymentService : IPaymentService
@@ -12,15 +13,16 @@ public class PaymentService : IPaymentService
     public PaymentService(IHttpClientFactory httpClientFactory, ILogger<PaymentService> logger)
     {
         ArgumentNullException.ThrowIfNull(httpClientFactory);
-        ArgumentNullException.ThrowIfNull(logger);
 
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _httpClient = httpClientFactory.CreateClient(Constants.PaymentHttpClientName);
-        _logger = logger;
     }
 
     public async Task Process()
     {
         var response = await _httpClient.GetAsync("wee");
+
+        var payment = new Payment();
     }
 
 }
