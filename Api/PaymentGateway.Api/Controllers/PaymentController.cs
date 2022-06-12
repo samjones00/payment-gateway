@@ -1,6 +1,11 @@
+using System.Net;
 using System.Net.Mime;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using PaymentGateway.Core.Responses;
+using PaymentGateway.Domain.Dto;
 using PaymentGateway.Domain.Interfaces;
+using PaymentGateway.Domain.Queries;
 
 namespace PaymentGateway.Api.Controllers;
 
@@ -10,21 +15,42 @@ namespace PaymentGateway.Api.Controllers;
 public class PaymentController : ControllerBase
 {
     private readonly ILogger<PaymentController> _logger;
-    private readonly IPaymentService _paymentService;
+    private readonly IMediator _mediator;
 
-    public PaymentController(ILogger<PaymentController> logger, IPaymentService paymentService)
+    public PaymentController(ILogger<PaymentController> logger, IMediator mediator)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _paymentService = paymentService ?? throw new ArgumentNullException(nameof(paymentService));
+        _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
     }
 
-    [HttpGet]
-    //[ProducesResponseType(200, Type = typeof(GetPaymentResponse))]
-    [ProducesResponseType(404)]
-    public async Task<IActionResult> Get()
+    [HttpPost]
+    [ProducesResponseType(typeof(ProcessPaymentResponse), (int)HttpStatusCode.Created)]
+    public async Task<IActionResult> ProcessPayment(ProcessPaymentCommand command)
     {
-        await _paymentService.Process();
+        var response = await _mediator.Send(command);
 
-        return Ok();
+        if (response.ValidationErrors.Any())
+        {
+            return BadRequest(response);
+        }
+
+        return Created($"/details/{response.PaymentReference}", response);
+    }
+
+
+    [HttpGet]
+    [ProducesResponseType(typeof(PaymentDetailsResponse), (int)HttpStatusCode.Created)]
+    [ProducesResponseType(404)]
+    public async Task<IActionResult> GetPaymentDetails(PaymentDetailsQuery query)
+    {
+        throw new NotImplementedException();
+        //var response = await _processPaymentService.Process(request);
+
+        //if (response.ValidationErrors.Any())
+        //{
+        //    return BadRequest(response);
+        //}
+
+        //return Created($"/details/{response.PaymentReference}", response);
     }
 }

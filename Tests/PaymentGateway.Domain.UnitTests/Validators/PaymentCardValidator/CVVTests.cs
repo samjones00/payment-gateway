@@ -1,12 +1,12 @@
-using FluentAssertions;
 using FluentValidation.TestHelper;
+using NUnit.Framework;
 using PaymentGateway.Domain.Models.Card;
-
+using PaymentGateway.Tests.Shared;
 using DomainValidators = PaymentGateway.Domain.Validators;
 
 namespace PaymentCardValidatorTests;
 
-public class CVVTests
+public class CVVTests : TestBase
 {
     [TestCase("000")]
     [TestCase("0000")]

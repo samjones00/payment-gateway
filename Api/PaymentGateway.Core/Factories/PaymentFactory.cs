@@ -1,20 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using PaymentGateway.Domain.Enums;
+﻿using PaymentGateway.Domain.Enums;
 using PaymentGateway.Domain.Models;
 
 namespace PaymentGateway.Core.Factories
 {
-    public class PaymentFactory
+    public static class PaymentFactory
     {
-        public Payment Create()
+        public static Payment Create(string paymentReference)
         {
             var payment = new Payment
             {
-
+                PaymentReference = new PaymentReference(paymentReference)
             };
 
             payment.PaymentStatus = PaymentStatus.Pending;

@@ -5,7 +5,7 @@ namespace PaymentGateway.Domain.Models
 {
     public class Payment
     {
-        public Guid PaymentId { get; set; }
+        public PaymentReference PaymentReference { get; set; }
 
         public Merchant Merchant { get; init; }
 

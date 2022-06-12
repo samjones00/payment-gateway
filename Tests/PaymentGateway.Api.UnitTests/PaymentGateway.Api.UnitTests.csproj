@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PaymentGateway.TestBase\PaymentGateway.TestBase.csproj" />
+    <ProjectReference Include="..\PaymentGateway.TestBase\PaymentGateway.Tests.Shared.csproj" />
   </ItemGroup>
 
 </Project>

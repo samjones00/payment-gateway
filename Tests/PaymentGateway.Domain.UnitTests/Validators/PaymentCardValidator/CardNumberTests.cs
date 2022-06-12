@@ -1,12 +1,12 @@
-using FluentAssertions;
 using FluentValidation.TestHelper;
+using NUnit.Framework;
 using PaymentGateway.Domain.Models.Card;
-
+using PaymentGateway.Tests.Shared;
 using DomainValidators = PaymentGateway.Domain.Validators;
 
 namespace PaymentCardValidatorTests;
 
-public class CardNumberTests
+public class CardNumberTests : TestBase
 {
     private readonly Random random = new();
 

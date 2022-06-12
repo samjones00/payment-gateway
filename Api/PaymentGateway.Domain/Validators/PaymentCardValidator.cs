@@ -25,4 +25,4 @@ namespace PaymentGateway.Domain.Validators
                .WithMessage($"CVV number must be a maximum of {CVV.MaximumLength} digits.");
         }
     }
-}   
+}
