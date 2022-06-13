@@ -2,8 +2,9 @@
 {
     public class PaymentCard
     {
-        public CardNumber CardNumber { get; init; } = new CardNumber("");
+        public CardNumber CardNumber { get; init; }
 
-        public CVV CVV { get; init; } = new CVV("");
+        public CVV CVV { get; init; }
+        public ExpiryDate ExpiryDate { get; init; }
     }
 }

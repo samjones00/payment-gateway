@@ -17,7 +17,7 @@ namespace PaymentGateway.Tests.Shared
                     {
                         // services.RemoveAll(typeof(MockRepository));
                         //services.AddTransient<IRepository, MockRepository>(); //replace implementation with a mock
-                        services.AddHttpClient(Constants.PaymentHttpClientName, client =>
+                        services.AddHttpClient(Constants.ProcessPaymentHttpClientName, client =>
                         {
                             client.BaseAddress = new Uri("http://localhost:5000");
                         });

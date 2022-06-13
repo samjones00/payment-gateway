@@ -2,7 +2,6 @@
 {
     public static class Constants
     {
-        public const string PaymentHttpClientName = "PaymentHttpClient";
-
+        public const string ProcessPaymentHttpClientName = nameof(ProcessPaymentHttpClientName);
     }
 }

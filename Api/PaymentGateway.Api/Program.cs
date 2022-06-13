@@ -1,11 +1,6 @@
 using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using PaymentGateway.Api;
-using PaymentGateway.Core.Responses;
+using PaymentGateway.Core;
 using PaymentGateway.DependencyInjection;
-using PaymentGateway.Domain.Dto;
-using PaymentGateway.Domain.Enums;
-using PaymentGateway.Domain.Queries;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,7 +11,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddMediatR(typeof(ProcessPaymentCommand));
+builder.Services.AddMediatR(typeof(IAssemblyMarker));
 builder.Services.AddPaymentConfiguration(builder.Configuration, x => { });
 builder.Services.AddPaymentValidators();
 builder.Services.AddPaymentProcessingServices(builder.Configuration);
@@ -24,26 +19,7 @@ builder.Services.AddPaymentDetailServices();
 
 var app = builder.Build();
 
-//app.MapEndpoints()
-
-app.MapPost(Routes.ProcessPayment, async ([FromServices] IMediator mediator, ProcessPaymentCommand command) =>
-    {
-        var response = await mediator.Send(command);
-
-        if (response.PaymentStatus is PaymentStatus.Unsuccessful)
-        {
-            return Results.BadRequest(response);
-        }
-
-        return Results.Created($"{Routes.PaymentDetails}/{response.PaymentReference}", response);
-    })
-   .Produces<ProcessPaymentResponse>(StatusCodes.Status400BadRequest)
-   .Produces<ProcessPaymentResponse>(StatusCodes.Status201Created);
-
-app.MapPost(Routes.PaymentDetails, async ([FromServices] IMediator mediator, PaymentDetailsQuery query) =>
-         await mediator.Send(query) is PaymentDetailsResponse details ? Results.Ok(details) : Results.NotFound())
-   .Produces<PaymentDetailsResponse>(StatusCodes.Status200OK)
-   .Produces(StatusCodes.Status404NotFound);
+app.MapEndpoints();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

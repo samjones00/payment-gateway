@@ -1,4 +1,4 @@
-﻿namespace PaymentGateway.Api
+﻿namespace PaymentGateway.Domain.Enums
 {
     public static class Routes
     {

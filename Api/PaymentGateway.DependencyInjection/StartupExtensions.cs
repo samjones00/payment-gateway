@@ -1,6 +1,8 @@
 ﻿using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using PaymentGateway.Core.Factories;
+using PaymentGateway.Core.Providers;
 using PaymentGateway.Core.Services;
 using PaymentGateway.Domain;
 using PaymentGateway.Domain.Configuration;
@@ -24,7 +26,7 @@ public static class StartupExtensions
 
     public static IServiceCollection AddPaymentValidators(this IServiceCollection services)
     {
-        services.AddValidatorsFromAssemblyContaining<GatewayOptionsValidator>();
+        services.AddValidatorsFromAssemblyContaining<IAssemblyMarker>();
 
         return services;
     }
@@ -38,8 +40,10 @@ public static class StartupExtensions
 
         //Swap out to replace with a different payment provider
         services.AddTransient<IBankConnectorService, BankConnectorService>();
+        services.AddTransient<IPaymentFactory, PaymentFactory>(); 
+        services.AddTransient<IDateTimeProvider, DateTimeProvider>();
 
-        services.AddHttpClient<BankConnectorService>(Constants.PaymentHttpClientName, client =>
+        services.AddHttpClient<BankConnectorService>(Constants.ProcessPaymentHttpClientName, client =>
         {
             client.BaseAddress = new Uri(options.BaseAddress);
         });

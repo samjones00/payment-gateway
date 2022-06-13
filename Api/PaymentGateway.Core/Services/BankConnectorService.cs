@@ -16,7 +16,7 @@ namespace PaymentGateway.Core.Services
         {
             ArgumentNullException.ThrowIfNull(httpClientFactory);
 
-            _httpClient = httpClientFactory.CreateClient(Constants.PaymentHttpClientName);
+            _httpClient = httpClientFactory.CreateClient(Constants.ProcessPaymentHttpClientName);
         }
 
         public async Task<Payment> Process(Payment payment, CancellationToken cancellationToken)
@@ -29,7 +29,6 @@ namespace PaymentGateway.Core.Services
             return payment;
         }
 
-        public StringContent CreateStringContent<T>(T model) => new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, MediaTypeNames.Application.Json);
-
+        public StringContent CreateStringContent<T>(T model) => new(JsonConvert.SerializeObject(model), Encoding.UTF8, MediaTypeNames.Application.Json);
     }
 }

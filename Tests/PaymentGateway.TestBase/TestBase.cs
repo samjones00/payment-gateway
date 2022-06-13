@@ -12,4 +12,9 @@ public class TestBase
         _fixture = new Fixture();
         _mockRepository = new MockRepository(MockBehavior.Strict);
     }
+
+    public static IEnumerable<string> NullOrWhiteSpaceStrings() => new List<string> { " ", "", null };
+
+    public static string CreateStringOfLength(int length) => new('0', length);
+
 }

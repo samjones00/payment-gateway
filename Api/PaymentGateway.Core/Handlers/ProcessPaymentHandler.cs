@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
-using PaymentGateway.Core.Factories;
 using PaymentGateway.Core.Responses;
 using PaymentGateway.Domain.Dto;
 using PaymentGateway.Domain.Interfaces;
@@ -10,16 +9,18 @@ public class ProcessPaymentHandler : IRequestHandler<ProcessPaymentCommand, Proc
 {
     private readonly ILogger<ProcessPaymentHandler> _logger;
     private readonly IBankConnectorService _bankConnectorService;
+    private readonly IPaymentFactory _paymentFactory;
 
-    public ProcessPaymentHandler(ILogger<ProcessPaymentHandler> logger, IBankConnectorService bankConnectorService)
+    public ProcessPaymentHandler(ILogger<ProcessPaymentHandler> logger, IBankConnectorService bankConnectorService, IPaymentFactory paymentFactory)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _bankConnectorService = bankConnectorService ?? throw new ArgumentNullException(nameof(bankConnectorService));
+        _paymentFactory = paymentFactory ?? throw new ArgumentNullException(nameof(paymentFactory));
     }
 
     public async Task<ProcessPaymentResponse> Handle(ProcessPaymentCommand request, CancellationToken cancellationToken)
     {
-        var payment = PaymentFactory.Create(request.PaymentReference);
+        var payment = _paymentFactory.Create(request);
 
         var bankResponse = await _bankConnectorService.Process(payment, cancellationToken);
 
