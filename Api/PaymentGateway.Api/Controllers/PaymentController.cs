@@ -4,6 +4,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using PaymentGateway.Core.Attributes;
 using PaymentGateway.Core.Responses;
+using PaymentGateway.Domain;
 using PaymentGateway.Domain.Dto;
 using PaymentGateway.Domain.Enums;
 using PaymentGateway.Domain.Interfaces;
@@ -12,7 +13,7 @@ using PaymentGateway.Domain.Queries;
 namespace PaymentGateway.Api.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route(ApiRoutes.Path)]
 [Produces(MediaTypeNames.Application.Json)]
 public class PaymentController : ControllerBase
 {
@@ -25,7 +26,7 @@ public class PaymentController : ControllerBase
         _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
     }
 
-    [HttpPost]
+    [HttpPost(ApiRoutes.SubmitPayment)]
     [AuthenticationFilter(Role = Role.Reader)]
     [ProducesResponseType(typeof(ProcessPaymentResponse), (int)HttpStatusCode.Created)]
     public async Task<IActionResult> ProcessPayment(ProcessPaymentCommand command)
@@ -41,7 +42,7 @@ public class PaymentController : ControllerBase
     }
 
 
-    [HttpGet]
+    [HttpGet(ApiRoutes.GetPaymentDetails)]
     [ProducesResponseType(typeof(PaymentDetailsResponse), (int)HttpStatusCode.Created)]
     [ProducesResponseType(404)]
     public async Task<IActionResult> GetPaymentDetails(PaymentDetailsQuery query)

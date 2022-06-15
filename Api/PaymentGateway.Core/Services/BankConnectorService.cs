@@ -29,6 +29,6 @@ namespace PaymentGateway.Core.Services
             return payment;
         }
 
-        public StringContent CreateStringContent<T>(T model) => new(JsonConvert.SerializeObject(model), Encoding.UTF8, MediaTypeNames.Application.Json);
+        public static StringContent CreateStringContent<T>(T model) => new(JsonConvert.SerializeObject(model), Encoding.UTF8, MediaTypeNames.Application.Json);
     }
 }

@@ -1,23 +1,12 @@
 ﻿using System.Runtime.Serialization;
+using FluentValidation;
 
 namespace PaymentGateway.Domain.Exceptions
 {
     [Serializable]
-    public class InvalidPaymentReferenceException : Exception
+    public class InvalidPaymentReferenceException : ValidationException
     {
-        public InvalidPaymentReferenceException()
-        {
-        }
-
         public InvalidPaymentReferenceException(string? message) : base(message)
-        {
-        }
-
-        public InvalidPaymentReferenceException(string? message, Exception? innerException) : base(message, innerException)
-        {
-        }
-
-        protected InvalidPaymentReferenceException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }

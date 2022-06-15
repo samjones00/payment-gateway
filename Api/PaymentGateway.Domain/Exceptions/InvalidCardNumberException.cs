@@ -1,23 +1,12 @@
 ﻿using System.Runtime.Serialization;
+using FluentValidation;
 
 namespace PaymentGateway.Domain.Exceptions
 {
     [Serializable]
-    public class InvalidCardNumberException : Exception
+    public class InvalidCardNumberException : ValidationException
     {
-        public InvalidCardNumberException()
-        {
-        }
-
         public InvalidCardNumberException(string? message) : base(message)
-        {
-        }
-
-        public InvalidCardNumberException(string? message, Exception? innerException) : base(message, innerException)
-        {
-        }
-
-        protected InvalidCardNumberException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }

@@ -3,8 +3,10 @@ using System.Net.Mime;
 using System.Text;
 using FluentAssertions;
 using Newtonsoft.Json;
+using PaymentGateway.Domain;
 using PaymentGateway.Domain.Dto;
 using PaymentGateway.Domain.Enums;
+using PaymentGateway.Domain.Interfaces;
 using PaymentGateway.Domain.Models.Card;
 using PaymentGateway.Tests.Shared;
 
@@ -26,7 +28,7 @@ public class PaymentIntegrationTests : IntegrationTestBase
         var content = CreateStringContent(paymentRequest);
 
         // When
-        var response = await _httpClient.PostAsync(Routes.ProcessPayment, content);
+        var response = await _httpClient.PostAsync(ApiRoutes.SubmitPayment, content);
 
         // Then
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
@@ -37,10 +39,14 @@ public class PaymentIntegrationTests : IntegrationTestBase
     [Test]
     public async Task Given_Valid_Request_When_Processing_Should_Return_Success()
     {
+        //ReplaceService<IBankConnectorService, MockBankConnectorService>();
+        //Build();
+
+
         // Given
         var paymentRequest = new ProcessPaymentCommand
         {
-            PaymentReference = Guid.NewGuid().ToString(),
+            PaymentReference = "afsfs",
             Amount = 12.34m,
             CardNumber = CreateStringOfLength(CardNumber.MinimumLength),
             CVV = CreateStringOfLength(CVV.MinimumLength),
@@ -54,11 +60,11 @@ public class PaymentIntegrationTests : IntegrationTestBase
         var content = CreateStringContent(paymentRequest);
 
         // When
-        var response = await _httpClient.PostAsync(Routes.ProcessPayment, content);
+        var response = await _httpClient.PostAsync(ApiRoutes.SubmitPayment, content);
 
         // Then
         response.StatusCode.Should().Be(HttpStatusCode.Created);
     }
 
-    public StringContent CreateStringContent<T>(T model) => new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, MediaTypeNames.Application.Json);
+    public StringContent CreateStringContent<T>(T model) => new(JsonConvert.SerializeObject(model), Encoding.UTF8, MediaTypeNames.Application.Json);
 }

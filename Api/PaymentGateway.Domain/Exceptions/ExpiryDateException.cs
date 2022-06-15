@@ -1,23 +1,12 @@
 ﻿using System.Runtime.Serialization;
+using FluentValidation;
 
 namespace PaymentGateway.Domain.Exceptions
 {
     [Serializable]
-    public class ExpiryDateException : Exception
+    public class ExpiryDateException : ValidationException
     {
-        public ExpiryDateException()
-        {
-        }
-
         public ExpiryDateException(string? message) : base(message)
-        {
-        }
-
-        public ExpiryDateException(string? message, Exception? innerException) : base(message, innerException)
-        {
-        }
-
-        protected ExpiryDateException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }

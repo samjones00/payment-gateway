@@ -1,7 +1,11 @@
+using System.Net;
+using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.Diagnostics;
 using PaymentGateway.Core;
 using PaymentGateway.Core.Middleware;
 using PaymentGateway.DependencyInjection;
+using static System.Net.Mime.MediaTypeNames;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,12 +21,14 @@ builder.Services.AddPaymentConfiguration(builder.Configuration, x => { });
 builder.Services.AddPaymentValidators();
 builder.Services.AddPaymentProcessingServices(builder.Configuration);
 builder.Services.AddPaymentDetailServices();
-builder.Services.AddPaymentAuthentication();
+//builder.Services.AddPaymentAuthentication();
 
 var app = builder.Build();
 
-//app.MapEndpoints();
+app.MapEndpoints();
 //app.UseAuthenticationMiddleware();
+
+app.AddValidationErrorHandling();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

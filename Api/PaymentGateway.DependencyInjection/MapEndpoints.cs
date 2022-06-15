@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using PaymentGateway.Core.Responses;
+using PaymentGateway.Domain;
 using PaymentGateway.Domain.Dto;
 using PaymentGateway.Domain.Enums;
 using PaymentGateway.Domain.Queries;
@@ -14,7 +15,7 @@ namespace PaymentGateway.DependencyInjection
     {
         public static IEndpointRouteBuilder MapEndpoints(this IEndpointRouteBuilder endpoints)
         {
-            endpoints.MapPost(Routes.ProcessPayment, async ([FromServices] IMediator mediator, ProcessPaymentCommand command) =>
+            endpoints.MapPost(ApiRoutes.SubmitPayment, async ([FromServices] IMediator mediator, ProcessPaymentCommand command) =>
             {
                 var response = await mediator.Send(command);
 
@@ -23,12 +24,12 @@ namespace PaymentGateway.DependencyInjection
                     return Results.BadRequest(response);
                 }
 
-                return Results.Created($"{Routes.PaymentDetails}/{response.PaymentReference}", response);
+                return Results.Created($"{ApiRoutes.SubmitPayment}/{response.PaymentReference}", response);
             })
             .Produces<ProcessPaymentResponse>(StatusCodes.Status400BadRequest)
             .Produces<ProcessPaymentResponse>(StatusCodes.Status201Created);
 
-            endpoints.MapPost(Routes.PaymentDetails, async ([FromServices] IMediator mediator, PaymentDetailsQuery query) =>
+            endpoints.MapPost(ApiRoutes.GetPaymentDetails, async ([FromServices] IMediator mediator, PaymentDetailsQuery query) =>
             {
                 return await mediator.Send(query) is PaymentDetailsResponse details ? Results.Ok(details) : Results.NotFound();
             })
