@@ -17,7 +17,6 @@ public class PaymentIntegrationTests : IntegrationTestBase
     [Test]
     public async Task Given_Invalid_CardNumber_When_Processing_Should_Return_Declined()
     {
-
         // Given
         var paymentRequest = new ProcessPaymentCommand
         {

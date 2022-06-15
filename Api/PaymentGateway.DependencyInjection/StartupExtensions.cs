@@ -1,13 +1,17 @@
 ﻿using FluentValidation;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using PaymentGateway.Core.Attributes;
 using PaymentGateway.Core.Factories;
+using PaymentGateway.Core.Middleware;
 using PaymentGateway.Core.Providers;
 using PaymentGateway.Core.Services;
 using PaymentGateway.Domain;
 using PaymentGateway.Domain.Configuration;
 using PaymentGateway.Domain.Interfaces;
 using PaymentGateway.Domain.Validators;
+using IAuthenticationService = PaymentGateway.Domain.Interfaces.IAuthenticationService;
 
 namespace PaymentGateway.DependencyInjection;
 
@@ -27,6 +31,15 @@ public static class StartupExtensions
     public static IServiceCollection AddPaymentValidators(this IServiceCollection services)
     {
         services.AddValidatorsFromAssemblyContaining<IAssemblyMarker>();
+
+        return services;
+    }
+
+    public static IServiceCollection AddPaymentAuthentication(this IServiceCollection services)
+    {
+        services.AddTransient<IAuthenticationService, Core.Services.AuthenticationService>();
+        services.AddTransient<Core.Middleware.AuthenticationMiddleware>();
+        services.AddScoped<AuthenticationFilter>();
 
         return services;
     }

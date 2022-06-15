@@ -2,8 +2,10 @@ using System.Net;
 using System.Net.Mime;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using PaymentGateway.Core.Attributes;
 using PaymentGateway.Core.Responses;
 using PaymentGateway.Domain.Dto;
+using PaymentGateway.Domain.Enums;
 using PaymentGateway.Domain.Interfaces;
 using PaymentGateway.Domain.Queries;
 
@@ -24,6 +26,7 @@ public class PaymentController : ControllerBase
     }
 
     [HttpPost]
+    [AuthenticationFilter(Role = Role.Reader)]
     [ProducesResponseType(typeof(ProcessPaymentResponse), (int)HttpStatusCode.Created)]
     public async Task<IActionResult> ProcessPayment(ProcessPaymentCommand command)
     {
@@ -34,7 +37,7 @@ public class PaymentController : ControllerBase
             return BadRequest(response);
         }
 
-        return Created($"/details/{response.PaymentReference}", response);
+        return CreatedAtAction(nameof(GetPaymentDetails), response);
     }
 
 

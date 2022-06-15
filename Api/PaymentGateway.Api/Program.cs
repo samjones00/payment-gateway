@@ -1,5 +1,6 @@
 using MediatR;
 using PaymentGateway.Core;
+using PaymentGateway.Core.Middleware;
 using PaymentGateway.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,10 +17,12 @@ builder.Services.AddPaymentConfiguration(builder.Configuration, x => { });
 builder.Services.AddPaymentValidators();
 builder.Services.AddPaymentProcessingServices(builder.Configuration);
 builder.Services.AddPaymentDetailServices();
+builder.Services.AddPaymentAuthentication();
 
 var app = builder.Build();
 
-app.MapEndpoints();
+//app.MapEndpoints();
+//app.UseAuthenticationMiddleware();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -31,6 +34,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+//app.UseHealthChecks("/healthcheck"); //test
 
 app.MapControllers();
 
