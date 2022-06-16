@@ -33,8 +33,6 @@ public class PaymentIntegrationTests : IntegrationTestBase
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
 
-    //private string GenerateCardNumber
-
     [Test]
     public async Task Given_Valid_Request_When_Processing_Should_Return_Created()
     {

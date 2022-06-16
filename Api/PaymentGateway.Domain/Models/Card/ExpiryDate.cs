@@ -34,10 +34,6 @@ namespace PaymentGateway.Domain.Models.Card
         {
             public Validator()
             {
-                RuleFor(x => x.Value.Month)
-                    .InclusiveBetween(1, 12)
-                    .WithName(nameof(Month));
-
                 RuleFor(x => x.Value.Year)
                    .GreaterThanOrEqualTo(CurrentDate.Year)
                    .WithName(nameof(Year));

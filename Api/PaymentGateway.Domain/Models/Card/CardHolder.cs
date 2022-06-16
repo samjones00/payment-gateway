@@ -34,7 +34,9 @@ namespace PaymentGateway.Domain.Models.Card
                 RuleFor(x => x.Value)
                     .NotEmpty()
                     .Length(MinimumLength, MaximumLength)
+                    .WithMessage($"Must be between {MinimumLength} and {MaximumLength} characters.")
                     .Matches(RegexPatterns.LettersAndSpacesOnly)
+                    .WithMessage($"Must contain only letters and spaces.")
                     .WithName(nameof(CardHolder));
             }
         }
