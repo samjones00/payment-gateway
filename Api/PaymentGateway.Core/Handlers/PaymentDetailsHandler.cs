@@ -6,9 +6,9 @@ using PaymentGateway.Domain.Queries;
 namespace PaymentGateway.Core.Handlers;
 public class PaymentDetailsHandler : IRequestHandler<PaymentDetailsQuery, PaymentDetailsResponse>
 {
-    private readonly ILogger<ProcessPaymentHandler> _logger;
+    private readonly ILogger<PaymentDetailsHandler> _logger;
 
-    public PaymentDetailsHandler(ILogger<ProcessPaymentHandler> logger)
+    public PaymentDetailsHandler(ILogger<PaymentDetailsHandler> logger)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }

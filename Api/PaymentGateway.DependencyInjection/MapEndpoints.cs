@@ -15,7 +15,7 @@ namespace PaymentGateway.DependencyInjection
     {
         public static IEndpointRouteBuilder MapEndpoints(this IEndpointRouteBuilder endpoints)
         {
-            endpoints.MapPost(ApiRoutes.SubmitPayment, async ([FromServices] IMediator mediator, ProcessPaymentCommand command) =>
+            endpoints.MapPost(ApiRoutes.SubmitPayment, async ([FromServices] IMediator mediator, SubmitPaymentCommand command) =>
             {
                 var response = await mediator.Send(command);
 
@@ -26,8 +26,8 @@ namespace PaymentGateway.DependencyInjection
 
                 return Results.Created($"{ApiRoutes.SubmitPayment}/{response.PaymentReference}", response);
             })
-            .Produces<ProcessPaymentResponse>(StatusCodes.Status400BadRequest)
-            .Produces<ProcessPaymentResponse>(StatusCodes.Status201Created);
+            .Produces<SubmitPaymentResponse>(StatusCodes.Status400BadRequest)
+            .Produces<SubmitPaymentResponse>(StatusCodes.Status201Created);
 
             endpoints.MapPost(ApiRoutes.GetPaymentDetails, async ([FromServices] IMediator mediator, PaymentDetailsQuery query) =>
             {

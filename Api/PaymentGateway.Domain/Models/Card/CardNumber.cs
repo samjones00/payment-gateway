@@ -35,6 +35,7 @@ namespace PaymentGateway.Domain.Models.Card
             {
                 RuleFor(x => x.Value)
                     .NotEmpty()
+                    .CreditCard()
                     .Length(MinimumLength, MaximumLength)
                     .WithName(nameof(CardNumber));
             }

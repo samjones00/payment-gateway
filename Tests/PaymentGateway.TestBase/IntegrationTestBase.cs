@@ -1,9 +1,7 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.Testing;
+﻿using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using PaymentGateway.Api.IntegrationTests;
-using PaymentGateway.Domain;
 using PaymentGateway.Domain.Interfaces;
 
 namespace PaymentGateway.Tests.Shared
@@ -14,7 +12,7 @@ namespace PaymentGateway.Tests.Shared
 
         public HttpClient _httpClient;
 
-        public  void Build() => _httpClient = _webApplicationFactory.CreateClient();
+        public void Build() => _httpClient = _webApplicationFactory.CreateClient();
 
         public IntegrationTestBase()
         {
@@ -32,7 +30,7 @@ namespace PaymentGateway.Tests.Shared
                     });
                 });
 
-      
+
             _httpClient = _webApplicationFactory.CreateClient();
         }
 

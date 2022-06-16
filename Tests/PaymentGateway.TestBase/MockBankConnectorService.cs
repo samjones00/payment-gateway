@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using PaymentGateway.Domain.Interfaces;
+﻿using PaymentGateway.Domain.Interfaces;
 using PaymentGateway.Domain.Models;
 
 namespace PaymentGateway.Api.IntegrationTests
@@ -12,7 +7,10 @@ namespace PaymentGateway.Api.IntegrationTests
     {
         public Task<Payment> Process(Payment payment, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return Task.FromResult(new Payment
+            {
+                PaymentStatus = Domain.Enums.PaymentStatus.Successful
+            });
         }
     }
 }

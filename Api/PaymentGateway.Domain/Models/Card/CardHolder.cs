@@ -3,16 +3,16 @@ using PaymentGateway.Domain.Exceptions;
 
 namespace PaymentGateway.Domain.Models.Card
 {
-    public class CVV
+    public class CardHolder
     {
-        public const int MinimumLength = 3;
-        public const int MaximumLength = 4;
+        public const int MinimumLength = 2;
+        public const int MaximumLength = 40;
 
         public string? Value { get; private set; }
 
-        public static CVV Create(string cardNumber)
+        public static CardHolder Create(string cardNumber)
         {
-            var result = new CVV
+            var result = new CardHolder
             {
                 Value = cardNumber
             };
@@ -21,23 +21,21 @@ namespace PaymentGateway.Domain.Models.Card
 
             if (!validationResult.IsValid && validationResult.Errors.Any())
             {
-                throw new InvalidCVVException(validationResult.Errors.First().ErrorMessage);
+                throw new InvalidCardNumberException(validationResult.Errors.First().ErrorMessage);
             }
 
             return result;
         }
 
-        public static CVV Empty() => new();
-
-        private class Validator : AbstractValidator<CVV>
+        private class Validator : AbstractValidator<CardHolder>
         {
             public Validator()
             {
                 RuleFor(x => x.Value)
                     .NotEmpty()
                     .Length(MinimumLength, MaximumLength)
-                    .Matches(RegexPatterns.NumbersOnly)
-                    .WithName(nameof(CVV));
+                    .Matches(RegexPatterns.LettersAndSpacesOnly)
+                    .WithName(nameof(CardHolder));
             }
         }
     }

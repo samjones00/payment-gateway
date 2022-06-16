@@ -15,11 +15,11 @@ namespace PaymentGateway.Core.Factories
             _dateTimeProvider = dateTimeProvider ?? throw new ArgumentNullException(nameof(dateTimeProvider));
         }
 
-        public Payment Create(ProcessPaymentCommand command)
+        public Payment Create(SubmitPaymentCommand command)
         {
             var payment = new Payment
             {
-                PaymentReference = PaymentReference.Create(command.PaymentReference),
+                PaymentReference = ShopperReference.Create(command.PaymentReference),
                 PaymentCard = new PaymentCard
                 {
                     CardNumber = CardNumber.Create(command.CardNumber),

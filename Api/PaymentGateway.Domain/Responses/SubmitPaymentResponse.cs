@@ -2,7 +2,7 @@
 
 namespace PaymentGateway.Core.Responses
 {
-    public class ProcessPaymentResponse
+    public class SubmitPaymentResponse
     {
         public PaymentStatus PaymentStatus { get; set; }
         public IEnumerable<string> ValidationErrors { get; set; }

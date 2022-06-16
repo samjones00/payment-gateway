@@ -1,5 +1,4 @@
-﻿using System.Runtime.Serialization;
-using FluentValidation;
+﻿using FluentValidation;
 
 namespace PaymentGateway.Domain.Exceptions
 {

@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FluentAssertions;
+﻿using FluentAssertions;
 using NUnit.Framework;
-using AutoFixture;
-using PaymentGateway.Tests.Shared;
 using PaymentGateway.Domain.Exceptions;
 using PaymentGateway.Domain.Models.Card;
+using PaymentGateway.Tests.Shared;
 
 namespace PaymentGateway.Domain.UnitTests.Models
 {

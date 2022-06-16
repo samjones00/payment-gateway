@@ -15,11 +15,11 @@ namespace PaymentGateway.DependencyInjection
                 {
                     var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
 
-                    if (exceptionHandlerPathFeature?.Error is ValidationException)
+                    if (exceptionHandlerPathFeature?.Error.InnerException is ValidationException)
                     {
                         context.Response.StatusCode = StatusCodes.Status400BadRequest;
 
-                        await context.Response.WriteAsJsonAsync(exceptionHandlerPathFeature.Error.Message);
+                        await context.Response.WriteAsync(exceptionHandlerPathFeature.Error.InnerException.Message);
                     }
                 });
             });

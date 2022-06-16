@@ -1,11 +1,6 @@
-using System.Net;
-using FluentValidation;
 using MediatR;
-using Microsoft.AspNetCore.Diagnostics;
 using PaymentGateway.Core;
-using PaymentGateway.Core.Middleware;
 using PaymentGateway.DependencyInjection;
-using static System.Net.Mime.MediaTypeNames;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +10,8 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddAutoMapper(typeof(PaymentGateway.Core.IAssemblyMarker).Assembly);
 
 builder.Services.AddMediatR(typeof(IAssemblyMarker));
 builder.Services.AddPaymentConfiguration(builder.Configuration, x => { });
