@@ -1,9 +1,9 @@
 ﻿
 
 using MediatR;
-using PaymentGateway.Core.Responses;
+using PaymentGateway.Domain.Responses;
 
-namespace PaymentGateway.Domain.Dto
+namespace PaymentGateway.Domain.Commands
 {
     public class SubmitPaymentCommand : IRequest<SubmitPaymentResponse>
     {

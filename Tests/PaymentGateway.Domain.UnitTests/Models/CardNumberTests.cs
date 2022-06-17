@@ -33,6 +33,20 @@ namespace PaymentGateway.Domain.UnitTests.Models
         }
 
         [Test]
+        public void Given_Valid_Value_When_RequestingMasked_Value_Should_Return_Value()
+        {
+            // Given
+            var value = "123456789012345";
+
+            // When
+            var action = CardNumber.Create(value);
+            var result = action.MaskedValue;
+
+            // Then
+            result.Should().Be("***********2345");
+        }
+
+        [Test]
         public void Given_AboveMaximumLengthCardNumber_When_Validated_Should_FailValidation([Range(CardNumber.MaximumLength + 1, CardNumber.MaximumLength + 5)] int length)
         {
             // Given

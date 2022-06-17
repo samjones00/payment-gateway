@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
-using PaymentGateway.Core.Responses;
 using PaymentGateway.Domain.Queries;
+using PaymentGateway.Domain.Responses;
 
 namespace PaymentGateway.Core.Handlers;
 public class PaymentDetailsHandler : IRequestHandler<PaymentDetailsQuery, PaymentDetailsResponse>

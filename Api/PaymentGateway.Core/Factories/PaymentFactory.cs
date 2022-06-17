@@ -1,4 +1,5 @@
-﻿using PaymentGateway.Domain.Dto;
+﻿using PaymentGateway.Core.Providers;
+using PaymentGateway.Domain.Dto;
 using PaymentGateway.Domain.Enums;
 using PaymentGateway.Domain.Interfaces;
 using PaymentGateway.Domain.Models;
@@ -9,10 +10,12 @@ namespace PaymentGateway.Core.Factories
     public class PaymentFactory : IPaymentFactory
     {
         private readonly IDateTimeProvider _dateTimeProvider;
+        private readonly IEncryptionProvider _encryptionProvider;
 
-        public PaymentFactory(IDateTimeProvider dateTimeProvider)
+        public PaymentFactory(IDateTimeProvider dateTimeProvider, IEncryptionProvider encryptionProvider)
         {
             _dateTimeProvider = dateTimeProvider ?? throw new ArgumentNullException(nameof(dateTimeProvider));
+            _encryptionProvider = encryptionProvider;
         }
 
         public Payment Create(SubmitPaymentCommand command)
@@ -22,7 +25,7 @@ namespace PaymentGateway.Core.Factories
                 PaymentReference = ShopperReference.Create(command.PaymentReference),
                 PaymentCard = new PaymentCard
                 {
-                    CardNumber = CardNumber.Create(command.CardNumber),
+                    CardNumber = CardNumber.Create(command.CardNumber, _encryptionProvider),
                     ExpiryDate = ExpiryDate.Create(command.ExpiryDateMonth, command.ExpiryDateYear, DateOnly.FromDateTime(_dateTimeProvider.UtcNow()))
                 },
                 PaymentStatus = PaymentStatus.Pending

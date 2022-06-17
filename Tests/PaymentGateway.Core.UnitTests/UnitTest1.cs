@@ -1,4 +1,4 @@
-namespace PaymentGateway.Core.Tests;
+namespace PaymentGateway.Core.UnitTests;
 
 public class Tests
 {

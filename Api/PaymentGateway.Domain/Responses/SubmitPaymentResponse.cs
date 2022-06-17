@@ -1,6 +1,6 @@
 ﻿using PaymentGateway.Domain.Enums;
 
-namespace PaymentGateway.Core.Responses
+namespace PaymentGateway.Domain.Responses
 {
     public class SubmitPaymentResponse
     {

@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using PaymentGateway.Core.Responses;
-using PaymentGateway.Domain.Dto;
+using PaymentGateway.Domain.Commands;
 using PaymentGateway.Domain.Interfaces;
 using PaymentGateway.Domain.Models;
+using PaymentGateway.Domain.Responses;
 
 namespace PaymentGateway.Core.Handlers;
 public class SubmitPaymentHandler : IRequestHandler<SubmitPaymentCommand, SubmitPaymentResponse>
@@ -23,6 +23,8 @@ public class SubmitPaymentHandler : IRequestHandler<SubmitPaymentCommand, Submit
     public async Task<SubmitPaymentResponse> Handle(SubmitPaymentCommand request, CancellationToken cancellationToken)
     {
         var payment = _mapper.Map<Payment>(request);
+
+        var masked = payment.PaymentCard.CardNumber.MaskedValue;
 
         var bankResponse = await _bankConnectorService.Process(payment, cancellationToken);
 

@@ -3,11 +3,11 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
-using PaymentGateway.Core.Responses;
 using PaymentGateway.Domain;
-using PaymentGateway.Domain.Dto;
+using PaymentGateway.Domain.Commands;
 using PaymentGateway.Domain.Enums;
 using PaymentGateway.Domain.Queries;
+using PaymentGateway.Domain.Responses;
 
 namespace PaymentGateway.DependencyInjection
 {

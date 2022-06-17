@@ -1,7 +1,7 @@
 ﻿using PaymentGateway.Domain.Interfaces;
 using PaymentGateway.Domain.Models;
 
-namespace PaymentGateway.Api.IntegrationTests
+namespace PaymentGateway.Tests.Shared
 {
     public class MockBankConnectorService : IBankConnectorService
     {

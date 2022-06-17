@@ -11,6 +11,7 @@ namespace PaymentGateway.Domain.Models
         public ShopperReference ShopperReference { get; init; }
 
         public PaymentCard PaymentCard { get; init; }
+        public Amount Amount { get; init; }
 
         public PaymentStatus PaymentStatus { get; set; }
     }

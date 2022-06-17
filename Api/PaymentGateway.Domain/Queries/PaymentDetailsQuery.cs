@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using PaymentGateway.Core.Responses;
+using PaymentGateway.Domain.Responses;
 
 namespace PaymentGateway.Domain.Queries
 {

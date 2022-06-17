@@ -4,7 +4,7 @@ using System.Text;
 using FluentAssertions;
 using Newtonsoft.Json;
 using PaymentGateway.Domain;
-using PaymentGateway.Domain.Dto;
+using PaymentGateway.Domain.Commands;
 using PaymentGateway.Domain.Models;
 using PaymentGateway.Domain.Models.Card;
 using PaymentGateway.Tests.Shared;

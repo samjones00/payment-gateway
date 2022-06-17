@@ -1,4 +1,4 @@
-﻿using PaymentGateway.Domain.Dto;
+﻿using PaymentGateway.Domain.Commands;
 using PaymentGateway.Domain.Models;
 
 namespace PaymentGateway.Domain.Interfaces

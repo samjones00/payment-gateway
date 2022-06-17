@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PaymentGateway.Core.Attributes;
-using PaymentGateway.Core.Factories;
 using PaymentGateway.Core.Providers;
 using PaymentGateway.Core.Services;
 using PaymentGateway.Domain;
@@ -51,8 +50,9 @@ public static class StartupExtensions
 
         //Swap out to replace with a different payment provider
         services.AddTransient<IBankConnectorService, BankConnectorService>();
-        services.AddTransient<IPaymentFactory, PaymentFactory>();
+        //services.AddTransient<IPaymentFactory, PaymentFactory>();
         services.AddTransient<IDateTimeProvider, DateTimeProvider>();
+        services.AddTransient<IEncryptionProvider, WeakEncryptionProvider>();
 
 
         services.AddHttpClient<BankConnectorService>(Constants.ProcessPaymentHttpClientName, client =>
