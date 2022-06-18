@@ -39,8 +39,6 @@ public class PaymentIntegrationTests : IntegrationTestBase
         // Given
         var paymentRequest = new SubmitPaymentCommand
         {
-            ShopperReference = CreateStringOfLength(ShopperReference.Length),
-            PaymentReference = CreateStringOfLength(PaymentReference.Length),
             Amount = 12.34m,
             CardNumber = CreateStringOfLength(CardNumber.MinimumLength),
             CVV = CreateStringOfLength(CVV.MinimumLength),
@@ -66,8 +64,6 @@ public class PaymentIntegrationTests : IntegrationTestBase
         // Given
         var paymentRequest = new SubmitPaymentCommand
         {
-            ShopperReference = CreateStringOfLength(ShopperReference.Length),
-            PaymentReference = CreateStringOfLength(PaymentReference.Length),
             Amount = 12.34m,
             CardNumber = CreateStringOfLength(CardNumber.MinimumLength),
             CVV = CreateStringOfLength(CVV.MinimumLength),

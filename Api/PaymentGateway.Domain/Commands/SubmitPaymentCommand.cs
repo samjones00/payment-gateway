@@ -1,6 +1,4 @@
-﻿
-
-using MediatR;
+﻿using MediatR;
 using PaymentGateway.Domain.Responses;
 
 namespace PaymentGateway.Domain.Commands
@@ -9,7 +7,6 @@ namespace PaymentGateway.Domain.Commands
     {
         public string PaymentReference { get; set; }
         public string MerchantReference { get; set; }
-        public string ShopperReference { get; set; }
         public decimal Amount { get; set; }
         public string Currency { get; set; }
         public string CardNumber { get; set; }

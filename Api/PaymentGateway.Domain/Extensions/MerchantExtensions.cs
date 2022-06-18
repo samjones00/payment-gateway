@@ -10,9 +10,9 @@ namespace PaymentGateway.Domain.Extensions
         {
             ArgumentNullException.ThrowIfNull(httpContextAccessor);
 
-            var subject =  httpContextAccessor.HttpContext.User.Claims.Single(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+            var subject = httpContextAccessor.HttpContext.User.Claims.Single(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
 
-            if(subject is null)
+            if (subject is null)
             {
                 throw new AuthenticationException($"Claim '{ClaimTypes.NameIdentifier}' cannot be empty.");
             }

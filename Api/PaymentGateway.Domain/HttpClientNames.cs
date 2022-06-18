@@ -1,6 +1,6 @@
 ﻿namespace PaymentGateway.Domain
 {
-    public static class Constants
+    public static class HttpClientNames
     {
         public const string ProcessPaymentHttpClientName = nameof(ProcessPaymentHttpClientName);
     }

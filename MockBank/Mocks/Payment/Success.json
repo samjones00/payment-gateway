@@ -6,11 +6,8 @@
     "response": {
       "status": "OK",
       "body": {
-        "url": "<#= Request.Url?.ToString() #>",
-        "customerId": "<#= Request.Route["id"]?.ToString() #>",
-        "acceptHeader": "<#= Request.Header["Content-Type"]?.ToString() #>",
-        "queryString": "<#= Request.Query["dummy"]?.ToString() #>",
-        "requestBodyAttribute": "<#= Request.Body["address"]?[0]?.ToString() #>"
+        "Status": "Success",
+        "OrderReference": "<#= Request.Route["id"]?.ToString() #>"
       }
     }
   }

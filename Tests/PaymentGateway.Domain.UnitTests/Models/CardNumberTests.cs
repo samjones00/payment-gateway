@@ -40,7 +40,7 @@ namespace PaymentGateway.Domain.UnitTests.Models
 
             // When
             var action = CardNumber.Create(value);
-            var result = action.MaskedValue;
+            var result = action.GetMaskedValue();
 
             // Then
             result.Should().Be($"{new string(CardNumber.MaskCharacter, 11)}2345");

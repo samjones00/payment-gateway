@@ -3,26 +3,20 @@
 # payment-gateway
 
 ## Payment Journey 
+mermaid...
+mermaid...
 
-```mermaid
-sequenceDiagram
-    participant Merchant
-    participant Payment Gateway
-    participant Bank
-    Merchant->>Payment Gateway: Submit Payment
-    Payment Gateway->>Bank: Send Request 
-    Bank->>Payment Gateway: Return Response 
-    Payment Gateway->>Merchant: Return Status
-    Payment Gateway->>Payment Gateway: Retry If Unavailable 
+
+# The mock CKO bank
+Starting the mock bank
+```
+cd .\MockBank
+docker-compose up
 ```
 
-## Details Lookup
+### Example bank responses
 
-```mermaid
-sequenceDiagram
-    participant Merchant
-    participant Gateway
-    Merchant->>Gateway: Submit Payment
-    Gateway->>Merchant: Return Status
-    Gateway->>Gateway: Retry If Unavailable 
-```
+| Payment Reference | Response |
+|-|-|
+|ba1c9df4-001e-4922-9efa-488b59850bc4 | Unsuccessful
+|Any other guid | Successful

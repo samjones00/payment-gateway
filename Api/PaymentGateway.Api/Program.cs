@@ -1,9 +1,4 @@
-using System.Text;
-using MediatR;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.IdentityModel.Tokens;
-using PaymentGateway.Core;
+using PaymentGateway.AcquiringBanks.CKO;
 using PaymentGateway.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,18 +8,25 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+//builder.Services.AddSwaggerGen();
 
+//builder.Services.AddAutoMapper(
+//    typeof(PaymentGateway.Core.IAssemblyMarker).Assembly,
+//    typeof(PaymentGateway.AcquiringBanks.CKO.IAssemblyMarker).Assembly
+//    );
 
 builder.Services.AddGatewayServices(builder.Configuration);
 builder.Services.AddGatewayAuthentication(builder.Configuration);
+builder.Services.AddSwaggerWithJWTAuth();
+//builder.Services.AddAcquiringBankServices(builder.Configuration);
+builder.Services.AddCKOBankServices(builder.Configuration);
 
 var app = builder.Build();
 
-app.MapEndpoints();
+//app.MapEndpoints();
 //app.UseAuthenticationMiddleware();
 
-app.AddValidationErrorHandling();
+//app.AddValidationErrorHandling();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -37,6 +39,8 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+
 
 //app.UseHealthChecks("/healthcheck"); //test
 

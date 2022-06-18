@@ -7,31 +7,32 @@ using PaymentGateway.Domain.Models;
 using PaymentGateway.Domain.Responses;
 
 namespace PaymentGateway.Core.Handlers;
+
 public class SubmitPaymentHandler : IRequestHandler<SubmitPaymentCommand, SubmitPaymentResponse>
 {
     private readonly ILogger<SubmitPaymentHandler> _logger;
-    private readonly IBankConnectorService _bankConnectorService;
+    private readonly IBankConnector _bankConnectorService;
     private readonly IMapper _mapper;
 
-    public SubmitPaymentHandler(ILogger<SubmitPaymentHandler> logger, IBankConnectorService bankConnectorService, IMapper mapper)
+    public SubmitPaymentHandler(IBankConnector bankConnectorService, ILogger<SubmitPaymentHandler> logger, IMapper mapper)
     {
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _bankConnectorService = bankConnectorService ?? throw new ArgumentNullException(nameof(bankConnectorService));
-        _mapper = mapper;
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _mapper = mapper ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public async Task<SubmitPaymentResponse> Handle(SubmitPaymentCommand request, CancellationToken cancellationToken)
+    public async Task<SubmitPaymentResponse> Handle(SubmitPaymentCommand command, CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNull(request);
+        ArgumentNullException.ThrowIfNull(command);
 
-        var payment = _mapper.Map<Payment>(request);
-        var masked = payment.PaymentCard.CardNumber.MaskedValue;
+        var payment = _mapper.Map<Payment>(command);
 
-        var bankResponse = await _bankConnectorService.Process(payment, cancellationToken);
+        var bankResponseStatus = await _bankConnectorService.Process(payment, cancellationToken);
 
         var response = new SubmitPaymentResponse
         {
-            PaymentStatus = bankResponse.PaymentStatus
+            PaymentReference = command.PaymentReference,
+            PaymentStatus = bankResponseStatus.ToString()
         };
 
         return response;

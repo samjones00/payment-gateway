@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using PaymentGateway.Domain;
 using PaymentGateway.Domain.Commands;
-using PaymentGateway.Domain.Enums;
 using PaymentGateway.Domain.Extensions;
 using PaymentGateway.Domain.Queries;
 using PaymentGateway.Domain.Responses;
@@ -20,7 +19,7 @@ namespace PaymentGateway.DependencyInjection
                 .MapPost(ApiRoutes.SubmitPayment, async (
                     [FromServices] IMediator mediator,
                     [FromServices] IHttpContextAccessor httpContextAccessor,
-                    [FromBody] SubmitPaymentCommand command,
+                    [FromBody] SubmitPaymentDto command,
                     CancellationToken cancellationToken) => await Submit(mediator, httpContextAccessor, command, cancellationToken))
                 .Produces<SubmitPaymentResponse>(StatusCodes.Status202Accepted)
                 .Produces<SubmitPaymentResponse>(StatusCodes.Status400BadRequest);
@@ -37,19 +36,21 @@ namespace PaymentGateway.DependencyInjection
             return endpoints;
         }
 
-        static async Task<IResult> Submit(IMediator mediator, IHttpContextAccessor httpContextAccessor, SubmitPaymentCommand command, CancellationToken cancellationToken)
+        static async Task<IResult> Submit(IMediator mediator, IHttpContextAccessor httpContextAccessor, SubmitPaymentDto command, CancellationToken cancellationToken)
         {
-            var merchantReference = httpContextAccessor.GetMerchantReference();
-            command.MerchantReference = merchantReference;
+            //var merchantReference = httpContextAccessor.GetMerchantReference();
+            //command.MerchantReference = merchantReference;
 
-            var response = await mediator.Send(command, cancellationToken);
+            return Results.Content("nope");
 
-            if (response.PaymentStatus is PaymentStatus.Successful)
-            {
-                return Results.Accepted($"{ApiRoutes.SubmitPayment}/{response.PaymentReference}", response);
-            }
+            //var response = await mediator.Send(command, cancellationToken);
 
-            return Results.BadRequest(response);
+            //if (response.PaymentStatus is PaymentStatus.Successful)
+            //{
+            //    return Results.Accepted($"{ApiRoutes.SubmitPayment}/{response.PaymentReference}", response);
+            //}
+
+            //return Results.BadRequest(response);
         }
 
         static async Task<IResult> GetDetails(IMediator mediator, IHttpContextAccessor httpContextAccessor, PaymentDetailsQuery query, CancellationToken cancellationToken)

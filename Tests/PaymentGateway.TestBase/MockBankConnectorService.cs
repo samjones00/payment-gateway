@@ -1,16 +1,14 @@
-﻿using PaymentGateway.Domain.Interfaces;
+﻿using PaymentGateway.Domain.Enums;
+using PaymentGateway.Domain.Interfaces;
 using PaymentGateway.Domain.Models;
 
 namespace PaymentGateway.Tests.Shared
 {
-    public class MockBankConnectorService : IBankConnectorService
+    public class MockBankConnectorService : IBankConnector
     {
-        public Task<Payment> Process(Payment payment, CancellationToken cancellationToken)
+        public Task<PaymentStatus> Process(Payment payment, CancellationToken cancellationToken)
         {
-            return Task.FromResult(new Payment
-            {
-                PaymentStatus = Domain.Enums.PaymentStatus.Successful
-            });
+            return Task.FromResult(PaymentStatus.Successful);
         }
     }
 }

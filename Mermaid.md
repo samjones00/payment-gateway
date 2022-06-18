@@ -6,16 +6,16 @@ sequenceDiagram
     participant Merchant
     participant PG as Payment Gateway 
     participant DB as Database
-    participant Bank
-    Merchant->>PG: Submit Payment
-    PG-->>DB: Save to database
+    participant Bank as Mock CKO Bank
+    Merchant->>PG: POST Payment Request
+    PG-->>DB: Save to Database
     PG->>Merchant: Return accepted  Status (202)
 
     PG->>Bank: POST HTTP Request 
     Bank->>Bank: Retry If Unavailable     
     Bank->>PG: Return Response
-    PG-->>DB: Update database    
-    PG->>Merchant: Return Response (200)
+    PG-->>DB: Update Database    
+    PG->>Merchant: Return Details (200)
 ```
 
 ## Details Lookup
@@ -27,8 +27,8 @@ sequenceDiagram
     participant PG as Payment Gateway 
     participant DB as Database
     Merchant->>PG: GET Request
-    PG-->>DB:Query database
-    DB-->>PG:Return database
+    PG-->>DB:Query Database
+    DB-->>PG:Return Database
     PG->>Merchant: Return Details (200)
 ```
 

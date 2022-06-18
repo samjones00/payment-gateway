@@ -1,14 +1,13 @@
 ﻿using System.Text;
-using FluentValidation;
+using FluentValidation.AspNetCore;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using PaymentGateway.Core.Providers;
-using PaymentGateway.Core.Services;
-using PaymentGateway.Domain;
 using PaymentGateway.Domain.Configuration;
 using PaymentGateway.Domain.Interfaces;
 
@@ -18,27 +17,17 @@ public static class StartupExtensions
 {
     public static IServiceCollection AddGatewayServices(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddOptions<GatewayOptions>().Bind(configuration.GetSection(GatewayOptions.SectionName));
-        services.AddOptions<JwtOptions>().Bind(configuration.GetSection(JwtOptions.SectionName));
-
-        var optionsSection = configuration.GetSection(GatewayOptions.SectionName);
-        var options = optionsSection.Get<GatewayOptions>();
-
         services.AddAutoMapper(typeof(Core.IAssemblyMarker).Assembly);
-        services.AddMediatR(typeof(Domain.IAssemblyMarker));
-        services.AddValidatorsFromAssemblyContaining<IAssemblyMarker>();
+        services.AddMediatR(typeof(Core.IAssemblyMarker));
+        services.AddFluentValidation(x =>
+        {
+            x.RegisterValidatorsFromAssemblyContaining<Domain.IAssemblyMarker>();
+            x.DisableDataAnnotationsValidation = true;
+        });
+
         services.AddHttpContextAccessor();
-
-        //Swap out to replace with a different payment provider
-        services.AddTransient<IBankConnectorService, BankConnectorService>();
-
         services.AddTransient<IDateTimeProvider, DateTimeProvider>();
         services.AddTransient<IEncryptionProvider, WeakEncryptionProvider>();
-
-        services.AddHttpClient<BankConnectorService>(Constants.ProcessPaymentHttpClientName, client =>
-        {            
-            client.BaseAddress = new Uri(options.BaseAddress);
-        });
 
         //TODO:
         //Add polly
@@ -47,12 +36,26 @@ public static class StartupExtensions
         return services;
     }
 
+
+
+    //public static IServiceCollection AddAcquiringBankServices(this IServiceCollection services, IConfiguration configuration)
+    //{
+    //    var options = configuration.GetSection(AcquiringBankOptions.SectionName).Get<AcquiringBankOptions>();
+
+    //    services.AddHttpClient<BankConnectorService>(HttpClientNames.ProcessPaymentHttpClientName, client =>
+    //    {
+    //        client.BaseAddress = new Uri(options.BaseAddress);
+    //    });
+
+    //    services.AddTransient<IBankConnector, BankConnectorService>();
+
+
+    //    return services;
+    //}
+
     public static IServiceCollection AddGatewayAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddHttpContextAccessor();
-
-        var optionsSection = configuration.GetSection(JwtOptions.SectionName);
-        var jwtOptions = optionsSection.Get<JwtOptions>();
+        var jwtOptions = configuration.GetSection(JwtOptions.SectionName).Get<JwtOptions>();
 
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
         {
@@ -76,5 +79,41 @@ public static class StartupExtensions
         });
 
         return services;
+    }
+
+    public static IServiceCollection AddSwaggerWithJWTAuth(this IServiceCollection services)
+    {
+        services.AddSwaggerGen(options =>
+        {
+            options.SwaggerDoc("v1", new OpenApiInfo { Title = "Payment Gateway", Version = "v1" });
+
+            options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            {
+                Scheme = "Bearer",
+                BearerFormat = "JWT",
+                In = ParameterLocation.Header,
+                Type = SecuritySchemeType.Http,
+                Name = "Authorization",
+                Description = "Bearer Authentication with JWT Token"
+            });
+
+            options.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Id = "Bearer",
+                                Type = ReferenceType.SecurityScheme
+                            }
+                        },
+                        new List<string>()
+                    }
+                });
+        });
+
+        return services;
+
     }
 }

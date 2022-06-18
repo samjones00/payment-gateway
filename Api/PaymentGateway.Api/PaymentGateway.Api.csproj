@@ -7,15 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Controllers\PaymentController.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="MediatR" Version="10.0.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.1" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\PaymentGateway.AcquiringBanks.WorldPayMore\PaymentGateway.AcquiringBanks.CKO.csproj" />
     <ProjectReference Include="..\PaymentGateway.Core\PaymentGateway.Core.csproj" />
     <ProjectReference Include="..\PaymentGateway.DependencyInjection\PaymentGateway.DependencyInjection.csproj" />
   </ItemGroup>
@@ -24,10 +21,6 @@
     <Content Update="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Controllers\" />
   </ItemGroup>
 
 </Project>

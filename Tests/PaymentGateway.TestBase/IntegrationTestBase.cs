@@ -20,8 +20,8 @@ namespace PaymentGateway.Tests.Shared
                 {
                     builder.ConfigureServices(services =>
                     {
-                        services.RemoveAll<IBankConnectorService>();
-                        services.AddTransient<IBankConnectorService, MockBankConnectorService>(); //replace implementation with a mock
+                        services.RemoveAll<IBankConnector>();
+                        services.AddTransient<IBankConnector, MockBankConnectorService>(); //replace implementation with a mock
                         //services.AddHttpClient(Constants.ProcessPaymentHttpClientName, client =>
                         //{
                         //    client.BaseAddress = new Uri("http://localhost:5000");

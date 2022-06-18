@@ -1,14 +1,10 @@
-using System.Net;
 using System.Net.Mime;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using PaymentGateway.Core.Attributes;
-using PaymentGateway.Core.Responses;
 using PaymentGateway.Domain;
-using PaymentGateway.Domain.Dto;
-using PaymentGateway.Domain.Enums;
-using PaymentGateway.Domain.Interfaces;
+using PaymentGateway.Domain.Commands;
 using PaymentGateway.Domain.Queries;
+using PaymentGateway.Domain.Responses;
 
 namespace PaymentGateway.Api.Controllers;
 
@@ -27,25 +23,24 @@ public class PaymentController : ControllerBase
     }
 
     [HttpPost(ApiRoutes.SubmitPayment)]
-    [AuthenticationFilter(Role = Role.Reader)]
-    [ProducesResponseType(typeof(ProcessPaymentResponse), (int)HttpStatusCode.Created)]
-    public async Task<IActionResult> ProcessPayment(ProcessPaymentCommand command)
+    [ProducesResponseType(typeof(SubmitPaymentResponse), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> ProcessPayment(SubmitPaymentCommand command)
     {
         var response = await _mediator.Send(command);
 
-        if (response.ValidationErrors.Any())
-        {
-            return BadRequest(response);
-        }
+        var r = response.PaymentStatus;
 
-        return CreatedAtAction(nameof(GetPaymentDetails), response);
+        return CreatedAtAction(nameof(GetPaymentDetails), new { response.PaymentReference }, response);
     }
 
 
     [HttpGet(ApiRoutes.GetPaymentDetails)]
-    [ProducesResponseType(typeof(PaymentDetailsResponse), (int)HttpStatusCode.Created)]
-    [ProducesResponseType(404)]
-    public async Task<IActionResult> GetPaymentDetails(PaymentDetailsQuery query)
+    [ProducesResponseType(typeof(PaymentDetailsResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetPaymentDetails(string paymentReference)
     {
         throw new NotImplementedException();
         //var response = await _processPaymentService.Process(request);

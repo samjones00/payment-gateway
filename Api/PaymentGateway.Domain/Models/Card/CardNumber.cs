@@ -1,7 +1,4 @@
-﻿using FluentValidation;
-using PaymentGateway.Domain.Exceptions;
-
-namespace PaymentGateway.Domain.Models.Card
+﻿namespace PaymentGateway.Domain.Models.Card
 {
     public class CardNumber
     {
@@ -11,7 +8,6 @@ namespace PaymentGateway.Domain.Models.Card
         public const char MaskCharacter = 'X';
 
         public string? Value { get; private set; }
-        public string? MaskedValue { get; private set; }
 
 
         public static CardNumber Create(string cardNumber)
@@ -19,40 +15,42 @@ namespace PaymentGateway.Domain.Models.Card
             var result = new CardNumber
             {
                 Value = cardNumber,
-                MaskedValue = MaskString(cardNumber)
             };
 
-            var validationResult = new Validator().Validate(result);
+            //var validationResult = new Validator().Validate(result);
 
-            if (!validationResult.IsValid && validationResult.Errors.Any())
-            {
-                throw new InvalidCardNumberException(validationResult.Errors.First().ErrorMessage);
-            }
+            //if (!validationResult.IsValid && validationResult.Errors.Any())
+            //{
+            //    throw new InvalidCardNumberException(validationResult.Errors.First().ErrorMessage);
+            //}
 
             return result;
         }
 
-        private class Validator : AbstractValidator<CardNumber>
-        {
-            public Validator()
-            {
-                RuleFor(x => x.Value)
-                    .NotEmpty()
-                    //.CreditCard()
-                    .Length(MinimumLength, MaximumLength)
-                    .WithName(nameof(CardNumber));
-            }
-        }
+        //private class Validator : AbstractValidator<CardNumber>
+        //{
+        //    public Validator()
+        //    {
+        //        RuleFor(x => x.Value)
+        //            .NotEmpty()
+        //            //.CreditCard()
+        //            .Length(MinimumLength, MaximumLength)
+        //            .WithName(nameof(CardNumber));
+        //    }
+        //}
 
-        public static string MaskString(string source)
+    }
+    public static class CardNumberExtensions
+    {
+        public static string GetMaskedValue(this CardNumber source)
         {
-            if (string.IsNullOrEmpty(source) || UnmaskedDigitCount >= source.Length)
+            if (string.IsNullOrEmpty(source.Value) || CardNumber.UnmaskedDigitCount >= source.Value.Length)
             {
-                return source;
+                return string.Empty;
             }
 
-            string? masked = new(MaskCharacter, source.Length - UnmaskedDigitCount);
-            var notMasked = source.Remove(0, source.Length - UnmaskedDigitCount);
+            string? masked = new(CardNumber.MaskCharacter, source.Value.Length - CardNumber.UnmaskedDigitCount);
+            var notMasked = source.Value.Remove(0, source.Value.Length - CardNumber.UnmaskedDigitCount);
 
             return $"{masked}{notMasked}";
         }

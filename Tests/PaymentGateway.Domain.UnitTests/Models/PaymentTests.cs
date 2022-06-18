@@ -18,7 +18,6 @@ namespace PaymentGateway.Domain.UnitTests.Models
         {
             var paymentRequest = new SubmitPaymentCommand
             {
-                ShopperReference = CreateStringOfLength(ShopperReference.Length),
                 PaymentReference = CreateStringOfLength(PaymentReference.Length),
                 Amount = 12.34m,
                 CardNumber = CreateStringOfLength(CardNumber.MinimumLength),

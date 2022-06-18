@@ -1,7 +1,4 @@
-﻿using FluentValidation;
-using PaymentGateway.Domain.Exceptions;
-
-namespace PaymentGateway.Domain.Models.Card
+﻿namespace PaymentGateway.Domain.Models.Card
 {
     public class CVV
     {
@@ -17,28 +14,28 @@ namespace PaymentGateway.Domain.Models.Card
                 Value = cardNumber
             };
 
-            var validationResult = new Validator().Validate(result);
+            //var validationResult = new Validator().Validate(result);
 
-            if (!validationResult.IsValid && validationResult.Errors.Any())
-            {
-                throw new InvalidCVVException(validationResult.Errors.First().ErrorMessage);
-            }
+            //if (!validationResult.IsValid && validationResult.Errors.Any())
+            //{
+            //    throw new InvalidCVVException(validationResult.Errors.First().ErrorMessage);
+            //}
 
             return result;
         }
 
-        public static CVV Empty() => new();
+        //public static CVV Empty() => new();
 
-        private class Validator : AbstractValidator<CVV>
-        {
-            public Validator()
-            {
-                RuleFor(x => x.Value)
-                    .NotEmpty()
-                    .Length(MinimumLength, MaximumLength)
-                    .Matches(RegexPatterns.NumbersOnly)
-                    .WithName(nameof(CVV));
-            }
-        }
+        //private class Validator : AbstractValidator<CVV>
+        //{
+        //    public Validator()
+        //    {
+        //        RuleFor(x => x.Value)
+        //            .NotEmpty()
+        //            .Length(MinimumLength, MaximumLength)
+        //            .Matches(RegexPatterns.NumbersOnly)
+        //            .WithName(nameof(CVV));
+        //    }
+        //}
     }
 }
