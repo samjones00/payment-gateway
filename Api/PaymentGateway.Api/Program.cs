@@ -1,4 +1,8 @@
+using System.Text;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.IdentityModel.Tokens;
 using PaymentGateway.Core;
 using PaymentGateway.DependencyInjection;
 
@@ -11,14 +15,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddAutoMapper(typeof(PaymentGateway.Core.IAssemblyMarker).Assembly);
 
-builder.Services.AddMediatR(typeof(IAssemblyMarker));
-builder.Services.AddPaymentConfiguration(builder.Configuration, x => { });
-builder.Services.AddPaymentValidators();
-builder.Services.AddPaymentProcessingServices(builder.Configuration);
-builder.Services.AddPaymentDetailServices();
-//builder.Services.AddPaymentAuthentication();
+builder.Services.AddGatewayServices(builder.Configuration);
+builder.Services.AddGatewayAuthentication(builder.Configuration);
 
 var app = builder.Build();
 
@@ -36,6 +35,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 //app.UseHealthChecks("/healthcheck"); //test

@@ -43,7 +43,7 @@ namespace PaymentGateway.Domain.UnitTests.Models
             var result = action.MaskedValue;
 
             // Then
-            result.Should().Be("***********2345");
+            result.Should().Be($"{new string(CardNumber.MaskCharacter, 11)}2345");
         }
 
         [Test]

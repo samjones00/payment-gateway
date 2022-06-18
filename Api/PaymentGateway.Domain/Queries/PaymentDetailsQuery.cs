@@ -5,7 +5,7 @@ namespace PaymentGateway.Domain.Queries
 {
     public class PaymentDetailsQuery : IRequest<PaymentDetailsResponse>
     {
-        public string PaymentId { get; set; }
-        public string MerchantId { get; set; }
+        public string PaymentReference { get; set; }
+        public string MerchantReference { get; set; }
     }
 }

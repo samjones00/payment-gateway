@@ -8,6 +8,7 @@ namespace PaymentGateway.Domain.Models.Card
         public const int MinimumLength = 14;
         public const int MaximumLength = 16;
         public const int UnmaskedDigitCount = 4;
+        public const char MaskCharacter = 'X';
 
         public string? Value { get; private set; }
         public string? MaskedValue { get; private set; }
@@ -18,7 +19,7 @@ namespace PaymentGateway.Domain.Models.Card
             var result = new CardNumber
             {
                 Value = cardNumber,
-                MaskedValue = GetMaskedValue(cardNumber)
+                MaskedValue = MaskString(cardNumber)
             };
 
             var validationResult = new Validator().Validate(result);
@@ -43,17 +44,17 @@ namespace PaymentGateway.Domain.Models.Card
             }
         }
 
-        private static string? GetMaskedValue(string value)
+        public static string MaskString(string source)
         {
-            if (!string.IsNullOrEmpty(value))
+            if (string.IsNullOrEmpty(source) || UnmaskedDigitCount >= source.Length)
             {
-                var digitsToMask = value.Length - UnmaskedDigitCount;
-                var lastDigits = value.Substring(digitsToMask);
-                var masked = new string('*', digitsToMask);
-                return string.Concat(masked, lastDigits); ;
+                return source;
             }
 
-            return null;
+            string? masked = new(MaskCharacter, source.Length - UnmaskedDigitCount);
+            var notMasked = source.Remove(0, source.Length - UnmaskedDigitCount);
+
+            return $"{masked}{notMasked}";
         }
     }
 }

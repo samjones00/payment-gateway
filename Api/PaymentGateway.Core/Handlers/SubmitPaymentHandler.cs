@@ -22,8 +22,9 @@ public class SubmitPaymentHandler : IRequestHandler<SubmitPaymentCommand, Submit
 
     public async Task<SubmitPaymentResponse> Handle(SubmitPaymentCommand request, CancellationToken cancellationToken)
     {
-        var payment = _mapper.Map<Payment>(request);
+        ArgumentNullException.ThrowIfNull(request);
 
+        var payment = _mapper.Map<Payment>(request);
         var masked = payment.PaymentCard.CardNumber.MaskedValue;
 
         var bankResponse = await _bankConnectorService.Process(payment, cancellationToken);
