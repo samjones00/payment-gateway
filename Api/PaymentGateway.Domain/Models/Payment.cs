@@ -6,7 +6,7 @@ namespace PaymentGateway.Domain.Models
     {
         public PaymentReference PaymentReference { get; set; }
 
-        public Merchant Merchant { get; init; }
+        public MerchantReference MerchantReference { get; init; }
 
         public PaymentCard PaymentCard { get; init; }
 

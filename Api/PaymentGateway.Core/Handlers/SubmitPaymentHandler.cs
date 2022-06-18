@@ -13,12 +13,14 @@ public class SubmitPaymentHandler : IRequestHandler<SubmitPaymentCommand, Submit
     private readonly ILogger<SubmitPaymentHandler> _logger;
     private readonly IBankConnector _bankConnectorService;
     private readonly IMapper _mapper;
+    private readonly IRepository<Payment> _repository;
 
-    public SubmitPaymentHandler(IBankConnector bankConnectorService, ILogger<SubmitPaymentHandler> logger, IMapper mapper)
+    public SubmitPaymentHandler(IBankConnector bankConnectorService, ILogger<SubmitPaymentHandler> logger, IMapper mapper, IRepository<Payment> repository)
     {
         _bankConnectorService = bankConnectorService ?? throw new ArgumentNullException(nameof(bankConnectorService));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(logger));
+        _repository = repository;
     }
 
     public async Task<SubmitPaymentResponse> Handle(SubmitPaymentCommand command, CancellationToken cancellationToken)
@@ -26,6 +28,8 @@ public class SubmitPaymentHandler : IRequestHandler<SubmitPaymentCommand, Submit
         ArgumentNullException.ThrowIfNull(command);
 
         var payment = _mapper.Map<Payment>(command);
+
+        _repository.Insert(payment);
 
         var bankResponseStatus = await _bankConnectorService.Process(payment, cancellationToken);
 

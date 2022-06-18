@@ -11,7 +11,7 @@ namespace PaymentGateway.Core.Mapping
         {
             CreateMap<SubmitPaymentCommand, Payment>()
                 .ForMember(dest => dest.PaymentReference, opt => opt.MapFrom(src => PaymentReference.Create(src.PaymentReference)))
-                .ForMember(dest => dest.Merchant, opt => opt.MapFrom(src => Merchant.Create(src.MerchantReference)))
+                .ForMember(dest => dest.MerchantReference, opt => opt.MapFrom(src => MerchantReference.Create(src.MerchantReference)))
                 .ForMember(dest => dest.Amount, opt => opt.MapFrom(src => Amount.Create(src.Amount, src.Currency)))
                 .ForMember(dest => dest.PaymentCard, opt => opt.MapFrom(src => src));
 

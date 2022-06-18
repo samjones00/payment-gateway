@@ -2,8 +2,8 @@
 {
     public class Amount
     {
-        public decimal? Value { get; private set; }
-        public string? Currency { get; private set; }
+        public decimal Value { get; private set; }
+        public string Currency { get; private set; }
 
         public static Amount Create(decimal paymentReference, string currency)
         {

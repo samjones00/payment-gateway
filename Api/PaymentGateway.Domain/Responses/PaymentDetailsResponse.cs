@@ -6,7 +6,8 @@
         public string PaymentReference { get; set; }
         public string Status { get; set; }
         public string Currency { get; set; }
-        public string Amount { get; set; }
+        public decimal Amount { get; set; }
         public bool IsAuthorised { get; set; }
+        public string CardNumber { get; set; }
     }
 }

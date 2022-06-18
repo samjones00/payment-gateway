@@ -8,8 +8,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using PaymentGateway.Core.Providers;
+using PaymentGateway.Core.Repositories;
 using PaymentGateway.Domain.Configuration;
 using PaymentGateway.Domain.Interfaces;
+using PaymentGateway.Domain.Models;
 
 namespace PaymentGateway.DependencyInjection;
 
@@ -27,31 +29,16 @@ public static class StartupExtensions
 
         services.AddHttpContextAccessor();
         services.AddTransient<IDateTimeProvider, DateTimeProvider>();
-        services.AddTransient<IEncryptionProvider, WeakEncryptionProvider>();
+        services.AddTransient<IRepository<Payment>, InMemoryRepository>();
+        services.AddMemoryCache();
+
+        //services.AddTransient<IEncryptionProvider, WeakEncryptionProvider>();
 
         //TODO:
-        //Add polly
         //Validate config   
 
         return services;
     }
-
-
-
-    //public static IServiceCollection AddAcquiringBankServices(this IServiceCollection services, IConfiguration configuration)
-    //{
-    //    var options = configuration.GetSection(AcquiringBankOptions.SectionName).Get<AcquiringBankOptions>();
-
-    //    services.AddHttpClient<BankConnectorService>(HttpClientNames.ProcessPaymentHttpClientName, client =>
-    //    {
-    //        client.BaseAddress = new Uri(options.BaseAddress);
-    //    });
-
-    //    services.AddTransient<IBankConnector, BankConnectorService>();
-
-
-    //    return services;
-    //}
 
     public static IServiceCollection AddGatewayAuthentication(this IServiceCollection services, IConfiguration configuration)
     {

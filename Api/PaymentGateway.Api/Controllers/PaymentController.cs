@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using PaymentGateway.Domain;
 using PaymentGateway.Domain.Commands;
+using PaymentGateway.Domain.Extensions;
 using PaymentGateway.Domain.Queries;
 using PaymentGateway.Domain.Responses;
 
@@ -15,11 +16,13 @@ public class PaymentController : ControllerBase
 {
     private readonly ILogger<PaymentController> _logger;
     private readonly IMediator _mediator;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public PaymentController(ILogger<PaymentController> logger, IMediator mediator)
+    public PaymentController(ILogger<PaymentController> logger, IMediator mediator, IHttpContextAccessor httpContextAccessor)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+        _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
     }
 
     [HttpPost(ApiRoutes.SubmitPayment)]
@@ -28,6 +31,8 @@ public class PaymentController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> ProcessPayment(SubmitPaymentCommand command)
     {
+        var merchantReference = _httpContextAccessor.GetMerchantReference();
+        command.MerchantReference = merchantReference;
         var response = await _mediator.Send(command);
 
         var r = response.PaymentStatus;
@@ -42,14 +47,14 @@ public class PaymentController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetPaymentDetails(string paymentReference)
     {
-        throw new NotImplementedException();
-        //var response = await _processPaymentService.Process(request);
+        var merchantReference = _httpContextAccessor.GetMerchantReference();
+        var response = await _mediator.Send(new PaymentDetailsQuery(merchantReference, paymentReference));
 
-        //if (response.ValidationErrors.Any())
-        //{
-        //    return BadRequest(response);
-        //}
+        if (response is null)
+        {
+            return NotFound();
+        }
 
-        //return Created($"/details/{response.PaymentReference}", response);
+        return Ok(response);
     }
 }
