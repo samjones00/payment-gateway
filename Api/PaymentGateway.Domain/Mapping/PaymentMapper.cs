@@ -3,7 +3,7 @@ using PaymentGateway.Domain.Commands;
 using PaymentGateway.Domain.Models;
 using PaymentGateway.Domain.Models.Card;
 
-namespace PaymentGateway.Core.Mapping
+namespace PaymentGateway.Domain.Mapping
 {
     public class PaymentMapper : Profile
     {

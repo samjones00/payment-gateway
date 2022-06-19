@@ -1,7 +1,7 @@
 [![.NET](https://github.com/samjones00/payment-gateway/actions/workflows/dotnet.yml/badge.svg)](https://github.com/samjones00/payment-gateway/actions/workflows/dotnet.yml)
 
 
-## Overview
+# Overview
 --------------
 The objective is to accept payments from the merchant, pass the request through different stages and return a response describing the outcome. Below is a high level flow of the process.
 
@@ -23,6 +23,12 @@ sequenceDiagram
     PG->>Merchant: Return Details (200)
 ```
 
+## Requirements
+
+- Dotnet 6 SDK
+- Docker
+- Docker file sharing permissions allowing the `docker-compose` file in `.\MockBank` access to mount a volume. 
+
 ## Getting started
 -----------------
 
@@ -39,12 +45,12 @@ sequenceDiagram
     dotnet run
     ```
 3. ### Accessing the API
-    Copy one the JWT's from the [JSON-Web-Tokens](#JSON-Web-Tokens) section
 
 * Use Swagger UI from https://localhost:[portnumber]/swagger
 * Use Postman, importing the url https://localhost:[portnumber]/swagger/v1/swagger.json
 
 4. ### Authenticate using a bearer token
+    Copy one the JWT's from the [JSON-Web-Tokens](#JSON-Web-Tokens) section
 
 
 ### Example bank responses
@@ -73,11 +79,32 @@ eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo1MTM4LyI
 token here
 ```
 
+# Implementation Details
+
 ## API Routing
 -------------
-I first implemented routes using `MapPost` or `MapGet` using a, but found that automatic model validation isn't yet available for minimal API dotnet 6. 
+I first implemented routes using `MapPost` or `MapGet` using the newer format, but then I found this in the fluent validation documentation at https://docs.fluentvalidation.net/en/latest/aspnet.html.
 
-> Note that Minimal APIs that are part of .NET 6 don’t support automatic 
+> Note that Minimal APIs that are part of .NET 6 don’t support automatic validation.
+
+I have left the `MapRoutes.cs` class in `PaymentGateway.DependencyInjection` for reference.
+
+## Acquiring Bank
+
+All code and configuration for calling the mock CKO bank is separated into it's own `PaymentGateway.AcquiringBank.CKO` project, and is only referenced from the `PaymentGateway.Api` project using startup extensions.
+
+Benefits are:
+- Easy swapping out for other bank implementations
+- Replacing the mock with a real world bank or (vice versa) with minimal changes
+- A step closer for separating the acquiring banks into their own nuget packages for use in other applications.
+- Self contained including the appsettings
+
+## The Mock bank endpoint
+
+I'm using a pre-built docker image called mockaco which allows 
+
+## Persistance
 
 
-See https://docs.fluentvalidation.net/en/latest/aspnet.html for details. I have left thr 
+## Mapping
+

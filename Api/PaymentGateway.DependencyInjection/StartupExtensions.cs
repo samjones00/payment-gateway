@@ -19,7 +19,7 @@ public static class StartupExtensions
 {
     public static IServiceCollection AddGatewayServices(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddAutoMapper(typeof(Core.IAssemblyMarker).Assembly);
+        services.AddAutoMapper(typeof(Domain.IAssemblyMarker).Assembly);
         services.AddMediatR(typeof(Core.IAssemblyMarker));
         services.AddFluentValidation(x =>
         {

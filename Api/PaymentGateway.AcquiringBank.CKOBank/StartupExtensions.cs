@@ -16,7 +16,7 @@ namespace PaymentGateway.AcquiringBank.CKO
     {
         public static IServiceCollection AddCKOBankServices(this IServiceCollection services, IConfiguration configuration)
         {
-            var section = configuration.GetSection("CKOBankOptions");
+            var section = configuration.GetSection(AcquiringBankOptions.SectionName);
             var options = section.Get<AcquiringBankOptions>();
 
             services
@@ -36,13 +36,13 @@ namespace PaymentGateway.AcquiringBank.CKO
 
         public static ConfigureHostBuilder AddCKOBankConfiguration(this ConfigureHostBuilder builder)
         {
-            builder.ConfigureAppConfiguration((hostingContext, config) =>
+            builder.ConfigureAppConfiguration((_, config) =>
             {
-                var path = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+                var assembly = Assembly.GetExecutingAssembly();
 
                 config
-                    .SetBasePath(path)
-                    .AddJsonFile($"PaymentGateway.AcquiringBank.CKO.appsettings.json");
+                    .SetBasePath(Path.GetDirectoryName(assembly.Location))
+                    .AddJsonFile($"{assembly.GetName().Name}.appsettings.json");
             });
 
             return builder;
