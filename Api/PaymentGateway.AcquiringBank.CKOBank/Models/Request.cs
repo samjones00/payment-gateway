@@ -1,4 +1,4 @@
-﻿namespace PaymentGateway.AcquiringBanks.CKO.Models
+﻿namespace PaymentGateway.AcquiringBank.CKO.Models
 {
     public class Request
     {

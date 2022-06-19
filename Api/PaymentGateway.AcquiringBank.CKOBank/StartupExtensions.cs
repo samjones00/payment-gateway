@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using PaymentGateway.AcquiringBanks.CKO.Models;
+using PaymentGateway.AcquiringBank.CKO.Models;
 using PaymentGateway.Core.Services;
 using PaymentGateway.Domain;
 using PaymentGateway.Domain.Configuration;
@@ -8,7 +8,7 @@ using PaymentGateway.Domain.Interfaces;
 using Polly;
 using Polly.Extensions.Http;
 
-namespace PaymentGateway.AcquiringBanks.CKO
+namespace PaymentGateway.AcquiringBank.CKO
 {
     public static class StartupExtensions
     {
@@ -21,7 +21,7 @@ namespace PaymentGateway.AcquiringBanks.CKO
                 .AddHttpClient<BankConnectorService<Request, Response>>(HttpClientNames.ProcessPaymentHttpClientName, client =>
                 {
                     client.BaseAddress = new Uri(options.BaseAddress);
-                    client.DefaultRequestHeaders.Add("x-secure-key", "madeup-secure-key");
+                    client.ConfigureBankEndpointAuth();
                 })
                 .AddPolicyHandler(GetRetryPolicy(options));
 
@@ -32,7 +32,12 @@ namespace PaymentGateway.AcquiringBanks.CKO
             return services;
         }
 
-        static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy(AcquiringBankOptions options)
+        private static void ConfigureBankEndpointAuth(this HttpClient httpClient)
+        {
+            // Configure auth for bank endpoint here
+        }
+
+        private static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy(AcquiringBankOptions options)
         {
             return HttpPolicyExtensions
                 .HandleTransientHttpError()
@@ -45,26 +50,6 @@ namespace PaymentGateway.AcquiringBanks.CKO
                                 $"Request failed with {result?.Result?.StatusCode}. Waiting {timeSpan} before next retry. " +
                                 $"Retry attempt {retryCount} of {options.RetryCount}");
                     });
-            //.WaitAndRetryAsync(options.RetryCount, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
         }
-
-        //public static void AddPolicies(this HttpClient client)
-        //{
-        //    client.AddPolicyHandler(HttpPolicyExtensions
-        //        .HandleTransientHttpError()
-        //        .WaitAndRetryAsync(httpClientOptions.RetryPolicy.RetryCount,
-        //            i => TimeSpan.FromSeconds(httpClientOptions.RetryPolicy.RetryWaitTimeInSeconds),
-        //            (result, timeSpan, retryCount, context) =>
-        //            {
-        //                Console.WriteLine(
-        //                        $"Request failed with {result?.Result?.StatusCode}. Waiting {timeSpan} before next retry. Retry attempt {retryCount} OF {httpClientOptions.RetryPolicy.RetryCount}");
-        //            }));
-
-        //    if (httpClientOptions.CircuitBreakerPolicy.Enabled)
-        //        client.AddPolicyHandler(HttpPolicyExtensions
-        //            .HandleTransientHttpError()
-        //            .CircuitBreakerAsync(httpClientOptions.CircuitBreakerPolicy.EventsBeforeBreak,
-        //                TimeSpan.FromSeconds(httpClientOptions.CircuitBreakerPolicy.DurationOfBreakInSeconds)));
-        //}
     }
 }

@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using PaymentGateway.Domain;
 using PaymentGateway.Domain.Commands;
+using PaymentGateway.Domain.Enums;
 using PaymentGateway.Domain.Extensions;
 using PaymentGateway.Domain.Queries;
 using PaymentGateway.Domain.Responses;
@@ -28,7 +29,6 @@ public class PaymentController : ControllerBase
     [HttpPost(ApiRoutes.SubmitPayment)]
     [ProducesResponseType(typeof(SubmitPaymentResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> ProcessPayment(SubmitPaymentCommand command)
     {
         var merchantReference = _httpContextAccessor.GetMerchantReference();
@@ -37,9 +37,14 @@ public class PaymentController : ControllerBase
 
         var r = response.PaymentStatus;
 
-        return CreatedAtAction(nameof(GetPaymentDetails), new { response.PaymentReference }, response);
-    }
+        if (response.PaymentStatus == PaymentStatus.Successful.ToString())
+        {
+            return CreatedAtAction(nameof(GetPaymentDetails), new { response.PaymentReference }, response);
 
+        }
+
+        return BadRequest(response);
+    }
 
     [HttpGet(ApiRoutes.GetPaymentDetails)]
     [ProducesResponseType(typeof(PaymentDetailsResponse), StatusCodes.Status200OK)]

@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PaymentGateway.AcquiringBanks.WorldPayMore\PaymentGateway.AcquiringBanks.CKO.csproj" />
+    <ProjectReference Include="..\PaymentGateway.AcquiringBank.CKOBank\PaymentGateway.AcquiringBank.CKO.csproj" />
     <ProjectReference Include="..\PaymentGateway.Core\PaymentGateway.Core.csproj" />
     <ProjectReference Include="..\PaymentGateway.DependencyInjection\PaymentGateway.DependencyInjection.csproj" />
   </ItemGroup>

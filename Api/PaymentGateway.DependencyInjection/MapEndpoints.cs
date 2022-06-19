@@ -19,7 +19,7 @@ namespace PaymentGateway.DependencyInjection
                 .MapPost(ApiRoutes.SubmitPayment, async (
                     [FromServices] IMediator mediator,
                     [FromServices] IHttpContextAccessor httpContextAccessor,
-                    [FromBody] SubmitPaymentDto command,
+                    [FromBody] SubmitPaymentCommand command,
                     CancellationToken cancellationToken) => await Submit(mediator, httpContextAccessor, command, cancellationToken))
                 .Produces<SubmitPaymentResponse>(StatusCodes.Status202Accepted)
                 .Produces<SubmitPaymentResponse>(StatusCodes.Status400BadRequest);
@@ -36,21 +36,13 @@ namespace PaymentGateway.DependencyInjection
             return endpoints;
         }
 
-        static async Task<IResult> Submit(IMediator mediator, IHttpContextAccessor httpContextAccessor, SubmitPaymentDto command, CancellationToken cancellationToken)
+        static async Task<IResult> Submit(IMediator mediator, IHttpContextAccessor httpContextAccessor, SubmitPaymentCommand command, CancellationToken cancellationToken)
         {
-            //var merchantReference = httpContextAccessor.GetMerchantReference();
-            //command.MerchantReference = merchantReference;
+            var merchantReference = httpContextAccessor.GetMerchantReference();
+            command.MerchantReference = merchantReference;
+            var response = await mediator.Send(command);
 
-            return Results.Content("nope");
-
-            //var response = await mediator.Send(command, cancellationToken);
-
-            //if (response.PaymentStatus is PaymentStatus.Successful)
-            //{
-            //    return Results.Accepted($"{ApiRoutes.SubmitPayment}/{response.PaymentReference}", response);
-            //}
-
-            //return Results.BadRequest(response);
+            return Results.BadRequest(response);
         }
 
         static async Task<IResult> GetDetails(IMediator mediator, IHttpContextAccessor httpContextAccessor, PaymentDetailsQuery query, CancellationToken cancellationToken)
@@ -59,7 +51,6 @@ namespace PaymentGateway.DependencyInjection
             query.MerchantReference = merchantReference;
 
             return await mediator.Send(query, cancellationToken) is PaymentDetailsResponse details ? Results.Ok(details) : Results.NotFound();
-
         }
     }
 }

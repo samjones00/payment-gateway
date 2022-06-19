@@ -1,4 +1,4 @@
-﻿namespace PaymentGateway.AcquiringBanks.CKO
+﻿namespace PaymentGateway.AcquiringBank.CKO
 {
     public interface IAssemblyMarker
     {
