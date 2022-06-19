@@ -3,16 +3,16 @@ using PaymentGateway.Domain.Commands;
 using PaymentGateway.Domain.Models;
 using PaymentGateway.Domain.Models.Card;
 
-namespace PaymentGateway.Domain.Mapping
+namespace PaymentGateway.Core.Mapping
 {
-    public class PaymentMapper : Profile
+    public class SubmitPaymentCommandMapper : Profile
     {
-        public PaymentMapper()
+        public SubmitPaymentCommandMapper()
         {
             CreateMap<SubmitPaymentCommand, Payment>()
                 .ForMember(dest => dest.PaymentReference, opt => opt.MapFrom(src => PaymentReference.Create(src.PaymentReference)))
                 .ForMember(dest => dest.MerchantReference, opt => opt.MapFrom(src => MerchantReference.Create(src.MerchantReference)))
-                .ForMember(dest => dest.Amount, opt => opt.MapFrom(src => Amount.Create(src.Amount, src.Currency)))
+                .ForMember(dest => dest.Amount, opt => opt.MapFrom(src => Amount.Create(src.Amount, src.Currency.ToUpper())))
                 .ForMember(dest => dest.PaymentCard, opt => opt.MapFrom(src => src));
 
             CreateMap<SubmitPaymentCommand, PaymentCard>()
@@ -22,4 +22,4 @@ namespace PaymentGateway.Domain.Mapping
                 .ForMember(dest => dest.ExpiryDate, opt => opt.MapFrom(src => ExpiryDate.Create(src.ExpiryDateMonth, src.ExpiryDateYear)));
         }
     }
-}
+} 

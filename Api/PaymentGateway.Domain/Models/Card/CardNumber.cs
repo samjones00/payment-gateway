@@ -42,7 +42,7 @@
     }
     public static class CardNumberExtensions
     {
-        public static string GetMaskedValue(this CardNumber source)
+        public static string ToMaskedValue(this CardNumber source)
         {
             if (string.IsNullOrEmpty(source.Value) || CardNumber.UnmaskedDigitCount >= source.Value.Length)
             {

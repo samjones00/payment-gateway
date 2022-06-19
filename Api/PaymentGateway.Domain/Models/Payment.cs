@@ -11,6 +11,7 @@ namespace PaymentGateway.Domain.Models
         public PaymentCard PaymentCard { get; init; }
 
         public Amount Amount { get; init; }
+        public DateTime ProcessedOn { get; set; }
 
         public PaymentStatus PaymentStatus { get; set; }
     }

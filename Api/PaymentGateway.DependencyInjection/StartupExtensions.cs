@@ -17,9 +17,12 @@ namespace PaymentGateway.DependencyInjection;
 
 public static class StartupExtensions
 {
-    public static IServiceCollection AddGatewayServices(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddGatewayServices(this IServiceCollection services)
     {
-        services.AddAutoMapper(typeof(Domain.IAssemblyMarker).Assembly);
+        // Add dependencies
+        services.AddMemoryCache();
+        services.AddHttpContextAccessor();
+        services.AddAutoMapper(typeof(Core.IAssemblyMarker).Assembly);
         services.AddMediatR(typeof(Core.IAssemblyMarker));
         services.AddFluentValidation(x =>
         {
@@ -27,15 +30,16 @@ public static class StartupExtensions
             x.DisableDataAnnotationsValidation = true;
         });
 
-        services.AddHttpContextAccessor();
+        // Register dependency injection
         services.AddTransient<IDateTimeProvider, DateTimeProvider>();
-        services.AddTransient<IRepository<Payment>, InMemoryRepository>();
-        services.AddMemoryCache();
+        services.AddTransient<IEncryptionProvider, WeakEncryptionProvider>();
 
-        //services.AddTransient<IEncryptionProvider, WeakEncryptionProvider>();
-
-        //TODO:
-        //Validate config   
+        // Register repository and encryption decorator
+        services.AddTransient<InMemoryRepository>();
+        services.AddScoped<IRepository<Payment>>(provider => new CreditCardEncryptionDecorator(
+                provider.GetRequiredService<InMemoryRepository>(),
+                provider.GetRequiredService<IEncryptionProvider>()
+                ));
 
         return services;
     }
@@ -68,7 +72,7 @@ public static class StartupExtensions
         return services;
     }
 
-    public static IServiceCollection AddSwaggerWithJWTAuth(this IServiceCollection services)
+    public static IServiceCollection AddSwaggerWithJWTAuthentication(this IServiceCollection services)
     {
         services.AddSwaggerGen(options =>
         {
@@ -77,7 +81,7 @@ public static class StartupExtensions
             options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
                 Scheme = "Bearer",
-                BearerFormat = "JWT",
+                BearerFormat = "JWT", 
                 In = ParameterLocation.Header,
                 Type = SecuritySchemeType.Http,
                 Name = "Authorization",
@@ -101,6 +105,5 @@ public static class StartupExtensions
         });
 
         return services;
-
     }
 }
