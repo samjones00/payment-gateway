@@ -1,0 +1,8 @@
+{
+  "CKOBankOptions": {
+    "BaseAddress": "http://localhost:5000",
+    "PaymentEndpoint": "/process/PaymentReference",
+    "RetryWaitTimeInSeconds": 2,
+    "RetryCount": 5
+  }
+}

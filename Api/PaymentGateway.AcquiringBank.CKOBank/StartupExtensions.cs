@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System.Reflection;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PaymentGateway.AcquiringBank.CKO.Models;
 using PaymentGateway.Core.Services;
@@ -30,6 +32,20 @@ namespace PaymentGateway.AcquiringBank.CKO
             services.AddAutoMapper(typeof(IAssemblyMarker).Assembly);
 
             return services;
+        }
+
+        public static ConfigureHostBuilder AddCKOBankConfiguration(this ConfigureHostBuilder builder)
+        {
+            builder.ConfigureAppConfiguration((hostingContext, config) =>
+            {
+                var path = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+
+                config
+                    .SetBasePath(path)
+                    .AddJsonFile($"PaymentGateway.AcquiringBank.CKO.appsettings.json");
+            });
+
+            return builder;
         }
 
         private static void ConfigureBankEndpointAuth(this HttpClient httpClient)

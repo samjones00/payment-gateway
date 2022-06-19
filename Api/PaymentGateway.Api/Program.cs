@@ -10,12 +10,15 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
 // Configure Gateway
+builder.Host.AddCKOBankConfiguration();
+
 builder.Services.AddGatewayServices(builder.Configuration);
 builder.Services.AddGatewayAuthentication(builder.Configuration);
 builder.Services.AddSwaggerWithJWTAuth();
 builder.Services.AddCKOBankServices(builder.Configuration);
 
 var app = builder.Build();
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
