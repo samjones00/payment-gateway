@@ -29,21 +29,16 @@ public class PaymentController : ControllerBase
     [HttpPost(ApiRoutes.SubmitPayment)]
     [ProducesResponseType(typeof(SubmitPaymentResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> ProcessPayment(SubmitPaymentCommand command)
     {
         var merchantReference = _httpContextAccessor.GetMerchantReference();
         command.MerchantReference = merchantReference;
         var response = await _mediator.Send(command);
 
-        var r = response.PaymentStatus;
-
-        if (response.PaymentStatus == PaymentStatus.Successful.ToString())
-        {
-            return CreatedAtAction(nameof(GetPaymentDetails), new { response.PaymentReference }, response);
-
-        }
-
-        return BadRequest(response);
+        return response.PaymentStatus == PaymentStatus.Successful.ToString()
+            ? CreatedAtAction(nameof(GetPaymentDetails), new { response.PaymentReference }, response)
+            : BadRequest(response);
     }
 
     [HttpGet(ApiRoutes.GetPaymentDetails)]
@@ -52,14 +47,7 @@ public class PaymentController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetPaymentDetails(string paymentReference)
     {
-        var merchantReference = _httpContextAccessor.GetMerchantReference();
-        var response = await _mediator.Send(new PaymentDetailsQuery(merchantReference, paymentReference));
-
-        if (response is null)
-        {
-            return NotFound();
-        }
-
+        var response = await _mediator.Send(new PaymentDetailsQuery(_httpContextAccessor.GetMerchantReference(), paymentReference));
         return Ok(response);
     }
 }

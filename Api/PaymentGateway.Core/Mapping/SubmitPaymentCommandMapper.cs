@@ -22,4 +22,4 @@ namespace PaymentGateway.Core.Mapping
                 .ForMember(dest => dest.ExpiryDate, opt => opt.MapFrom(src => ExpiryDate.Create(src.ExpiryDateMonth, src.ExpiryDateYear)));
         }
     }
-} 
+}

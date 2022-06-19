@@ -69,12 +69,12 @@ Authentication and authorization is handled using JSON Web Tokens but due to tim
 - A valid bearer token must be provided to perform any action
 - Merchants can only access payment details submitted by themselves
 
-#### Merchant: Netflix
+#### Merchant: Apple
 
 ```
 eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo1MTM4LyIsImlhdCI6MTY1NTU4MjkxMCwiZXhwIjoxNjg3MTE4OTEwLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo1MTM4LyIsInN1YiI6IkFwcGxlIn0.TLGIHiqFuAbM7cVIJ3ZKVQ3dLi9YSzLE2BYVRqKqPhk
 ```
-#### Merchant: Disney Plus
+#### Merchant: Amazon
 ```
 token here
 ```
@@ -105,6 +105,25 @@ I'm using a pre-built docker image called mockaco which allows
 
 ## Persistance
 
+The payments are stored and updated using an in-memory cache, but could be swapped out for another implementation of `IRepository`.
+
+## Data security
+
+The credit card number is base64 encoded on writing to the repository and decoded on read using a `CreditCardEncryptionDecorator`, ideally this would use encryption for a NoSQL database or use Column-Level SQL Server Encryption if available.
 
 ## Mapping
 
+Automapper is used throughout for mapping, the command/query/domain model mapping is found in `PaymentGateway.Domain` and any acquiring bank profiles are part of `PaymentGateway.AcquiringBank.CKO`.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Merchant as Merchant 
+    participant Gateway as Payment Gateway
+    participant Bank as Bank
+    Merchant->>Gateway: Command mapped to Payment Domain Model
+    Gateway->>Bank: Payment Domain Model mapped to Bank Request Model
+    Bank->>Gateway: Bank Response Model mapped to 
+    Gateway->>Merchant: Payment Domain Model mapped to Payment Response 
+
+```

@@ -12,14 +12,24 @@ public class SubmitPaymentHandler : IRequestHandler<SubmitPaymentCommand, Submit
 {
     private readonly ILogger<SubmitPaymentHandler> _logger;
     private readonly IBankConnector _bankConnectorService;
+    private readonly IDateTimeProvider _dateTimeProvider;
     private readonly IMapper _mapper;
+    private readonly IMediator _mediator;
     private readonly IRepository<Payment> _repository;
 
-    public SubmitPaymentHandler(IBankConnector bankConnectorService, ILogger<SubmitPaymentHandler> logger, IMapper mapper, IRepository<Payment> repository)
+    public SubmitPaymentHandler(
+        IBankConnector bankConnectorService,
+        IDateTimeProvider dateTimeProvider,
+        ILogger<SubmitPaymentHandler> logger,
+        IMapper mapper,
+        IMediator mediator,
+        IRepository<Payment> repository)
     {
         _bankConnectorService = bankConnectorService ?? throw new ArgumentNullException(nameof(bankConnectorService));
+        _dateTimeProvider = dateTimeProvider ?? throw new ArgumentNullException(nameof(dateTimeProvider));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(logger));
+        _mediator = mediator;
         _repository = repository;
     }
 
@@ -35,6 +45,7 @@ public class SubmitPaymentHandler : IRequestHandler<SubmitPaymentCommand, Submit
 
         var response = new SubmitPaymentResponse
         {
+            ProcessedOn = _dateTimeProvider.UtcNow(),
             PaymentReference = command.PaymentReference,
             PaymentStatus = bankResponseStatus.ToString()
         };

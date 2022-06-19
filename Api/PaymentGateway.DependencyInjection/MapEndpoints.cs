@@ -38,19 +38,12 @@ namespace PaymentGateway.DependencyInjection
 
         static async Task<IResult> Submit(IMediator mediator, IHttpContextAccessor httpContextAccessor, SubmitPaymentCommand command, CancellationToken cancellationToken)
         {
-            var merchantReference = httpContextAccessor.GetMerchantReference();
-            command.MerchantReference = merchantReference;
-            var response = await mediator.Send(command);
-
-            return Results.BadRequest(response);
+            throw new NotImplementedException();
         }
 
         static async Task<IResult> GetDetails(IMediator mediator, IHttpContextAccessor httpContextAccessor, PaymentDetailsQuery query, CancellationToken cancellationToken)
         {
-            var merchantReference = httpContextAccessor.GetMerchantReference();
-            query.MerchantReference = merchantReference;
-
-            return await mediator.Send(query, cancellationToken) is PaymentDetailsResponse details ? Results.Ok(details) : Results.NotFound();
+            throw new NotImplementedException();
         }
     }
 }
