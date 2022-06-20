@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using PaymentGateway.Domain;
 using PaymentGateway.Domain.Commands;
-using PaymentGateway.Domain.Extensions;
 using PaymentGateway.Domain.Queries;
 using PaymentGateway.Domain.Responses;
 

@@ -76,7 +76,7 @@ eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo1MTM4LyI
 ```
 #### Merchant: Amazon
 ```
-token here
+eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo1MTM4LyIsImlhdCI6MTY1NTU4MjkxMCwiZXhwIjoxNjg3MTE4OTEwLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo1MTM4LyIsInN1YiI6IkFtYXpvbiJ9.3u77zp-pqHJdV79Lu92OxxzD6GaQ4gJK1YI_QKETA6g
 ```
 
 # Implementation Details
@@ -127,3 +127,7 @@ sequenceDiagram
     Gateway->>Merchant: Payment Domain Model mapped to Payment Response 
 
 ```
+
+# Extra mile bonus points
+
+- Retry policy with delay when calling the bank endpoint

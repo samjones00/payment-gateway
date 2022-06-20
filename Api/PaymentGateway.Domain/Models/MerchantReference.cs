@@ -2,7 +2,7 @@
 {
     public class MerchantReference
     {
-        public string? Value { get; private set; }
+        public string Value { get; private set; }
 
         public static MerchantReference Create(string merchantReference)
         {

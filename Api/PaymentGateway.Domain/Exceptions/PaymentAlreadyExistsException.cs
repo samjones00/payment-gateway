@@ -1,6 +1,4 @@
-﻿using System.Runtime.Serialization;
-
-namespace PaymentGateway.Domain.Exceptions
+﻿namespace PaymentGateway.Domain.Exceptions
 {
     [Serializable]
     public class PaymentAlreadyExistsException : Exception

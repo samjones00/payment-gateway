@@ -14,7 +14,6 @@ public class SubmitPaymentHandler : IRequestHandler<SubmitPaymentCommand, Submit
     private readonly IBankConnector _bankConnectorService;
     private readonly IDateTimeProvider _dateTimeProvider;
     private readonly IMapper _mapper;
-    private readonly IMediator _mediator;
     private readonly IRepository<Payment> _repository;
 
     public SubmitPaymentHandler(
@@ -22,14 +21,12 @@ public class SubmitPaymentHandler : IRequestHandler<SubmitPaymentCommand, Submit
         IDateTimeProvider dateTimeProvider,
         ILogger<SubmitPaymentHandler> logger,
         IMapper mapper,
-        IMediator mediator,
         IRepository<Payment> repository)
     {
         _bankConnectorService = bankConnectorService ?? throw new ArgumentNullException(nameof(bankConnectorService));
         _dateTimeProvider = dateTimeProvider ?? throw new ArgumentNullException(nameof(dateTimeProvider));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(logger));
-        _mediator = mediator;
         _repository = repository;
     }
 
@@ -43,13 +40,12 @@ public class SubmitPaymentHandler : IRequestHandler<SubmitPaymentCommand, Submit
 
         var bankResponseStatus = await _bankConnectorService.Process(payment, cancellationToken);
 
-        var response = new SubmitPaymentResponse
-        {
-            ProcessedOn = _dateTimeProvider.UtcNow(),
-            PaymentReference = command.PaymentReference,
-            PaymentStatus = bankResponseStatus.ToString()
-        };
+        payment.PaymentStatus = bankResponseStatus;
+        payment.ProcessedOn = _dateTimeProvider.UtcNow();
+        _repository.Update(payment);
 
-        return response;
+        var result = _mapper.Map<SubmitPaymentResponse>(payment);
+
+        return result;
     }
 }

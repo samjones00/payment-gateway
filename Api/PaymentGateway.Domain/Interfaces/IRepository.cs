@@ -1,5 +1,4 @@
-﻿using System.Linq.Expressions;
-using PaymentGateway.Domain.Models;
+﻿using PaymentGateway.Domain.Models;
 
 namespace PaymentGateway.Domain.Interfaces
 {

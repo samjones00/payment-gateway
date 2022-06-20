@@ -3,16 +3,14 @@
     public class PaymentReference
     {
         public const int Length = 36;
-        public string Value;
+        public string Value { get; private set; }
 
-        private PaymentReference(string code)
+        public static PaymentReference Create(string paymentReference)
         {
-            Value = code;
-        }
-
-        public static PaymentReference Create(string code)
-        {
-            return new PaymentReference(code);
+            return new PaymentReference
+            {
+                Value = paymentReference
+            };
         }
     }
 }

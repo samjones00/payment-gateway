@@ -1,4 +1,5 @@
-﻿using PaymentGateway.Domain.Interfaces;
+﻿using PaymentGateway.Domain.Extensions;
+using PaymentGateway.Domain.Interfaces;
 using PaymentGateway.Domain.Models;
 using PaymentGateway.Domain.Models.Card;
 
@@ -17,16 +18,18 @@ namespace PaymentGateway.Core.Repositories
 
         public void Delete(string merchantReference, string paymentReference)
         {
-           _repository.Delete(merchantReference, paymentReference);
+            _repository.Delete(merchantReference, paymentReference);
         }
 
         public Payment Get(string merchantReference, string paymentReference)
         {
             var payment = _repository.Get(merchantReference, paymentReference);
 
-            payment.PaymentCard.CardNumber = DecryptCardNumber(payment.PaymentCard.CardNumber.Value);
+            var result = payment.Clone();
 
-            return payment;
+            result.PaymentCard.CardNumber = DecryptCardNumber(result.PaymentCard.CardNumber.Value);
+
+            return result;
         }
 
         public void Insert(Payment entity)
@@ -40,7 +43,7 @@ namespace PaymentGateway.Core.Repositories
         {
             entity.PaymentCard.CardNumber = EncryptCardNumber(entity.PaymentCard.CardNumber.Value);
 
-           var payment = _repository.Update(entity);
+            var payment = _repository.Update(entity);
 
             return payment;
         }

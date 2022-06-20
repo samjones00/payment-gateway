@@ -81,7 +81,7 @@ public static class StartupExtensions
             options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
                 Scheme = "Bearer",
-                BearerFormat = "JWT", 
+                BearerFormat = "JWT",
                 In = ParameterLocation.Header,
                 Type = SecuritySchemeType.Http,
                 Name = "Authorization",

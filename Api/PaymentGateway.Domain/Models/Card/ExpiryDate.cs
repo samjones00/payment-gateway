@@ -1,6 +1,4 @@
-﻿using FluentValidation;
-
-namespace PaymentGateway.Domain.Models.Card
+﻿namespace PaymentGateway.Domain.Models.Card
 {
     public class ExpiryDate
     {
