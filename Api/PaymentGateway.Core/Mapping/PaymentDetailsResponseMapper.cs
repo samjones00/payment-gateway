@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using PaymentGateway.Domain.Enums;
+using PaymentGateway.Domain.Extensions;
 using PaymentGateway.Domain.Models;
-using PaymentGateway.Domain.Models.Card;
 using PaymentGateway.Domain.Responses;
 
 namespace PaymentGateway.Core.Mapping

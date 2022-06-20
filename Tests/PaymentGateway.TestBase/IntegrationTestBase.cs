@@ -7,15 +7,19 @@ namespace PaymentGateway.Tests.Shared
 {
     public class IntegrationTestBase : TestBase
     {
-        private WebApplicationFactory<Program> _webApplicationFactory;
-
         public HttpClient _httpClient;
 
-        public void Build() => _httpClient = _webApplicationFactory.CreateClient();
-
-        public IntegrationTestBase()
+        private void SetupLocalhostHttpClient()
         {
-            _webApplicationFactory = new WebApplicationFactory<Program>()
+            _httpClient = new HttpClient
+            {
+                BaseAddress = new Uri("https://localhost:7196")
+            };
+        }
+
+        private void SetupInMemoryHttpClient()
+        {
+            var webApplicationFactory = new WebApplicationFactory<Program>()
                 .WithWebHostBuilder(builder =>
                 {
                     builder.ConfigureServices(services =>
@@ -29,21 +33,12 @@ namespace PaymentGateway.Tests.Shared
                     });
                 });
 
-
-            _httpClient = _webApplicationFactory.CreateClient();
+            _httpClient = webApplicationFactory.CreateClient();
         }
 
-        public void ReplaceService<TInterface, TClass>()
+        public IntegrationTestBase()
         {
-            _webApplicationFactory = new WebApplicationFactory<Program>()
-                 .WithWebHostBuilder(builder =>
-                 {
-                     builder.ConfigureServices(services =>
-                     {
-                         services.RemoveAll(typeof(TInterface));
-                         services.AddTransient(typeof(TInterface), typeof(TClass));
-                     });
-                 });
+            SetupLocalhostHttpClient();
         }
     }
 }

@@ -1,8 +1,10 @@
 using System.Net;
+using System.Net.Http.Headers;
 using System.Net.Mime;
 using System.Text;
 using FluentAssertions;
 using Newtonsoft.Json;
+using NUnit.Framework;
 using PaymentGateway.Domain;
 using PaymentGateway.Domain.Commands;
 using PaymentGateway.Domain.Models;
@@ -33,12 +35,16 @@ public class PaymentIntegrationTests : IntegrationTestBase
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
 
+
     [Test]
     public async Task Given_Valid_Request_When_Processing_Should_Return_Created()
     {
         // Given
+        ApplyAuthenticationHeader();
+
         var paymentRequest = new SubmitPaymentCommand
         {
+            PaymentReference = CreateStringOfLength(PaymentReference.Length),
             Amount = 12.34m,
             CardNumber = CreateStringOfLength(CardNumber.MinimumLength),
             CVV = CreateStringOfLength(CVV.MinimumLength),
@@ -86,6 +92,14 @@ public class PaymentIntegrationTests : IntegrationTestBase
 
         json.Should().Be("'Year' must be greater than or equal to '2022'.");
 
+    }
+
+    private void ApplyAuthenticationHeader()
+    {
+        var token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo1MTM4LyIsImlhdCI6MTY1NTU4MjkxMCwiZXhwIjoxNjg3MTE4OTEwLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo1MTM4LyIsInN1YiI6IkFwcGxlIn0.TLGIHiqFuAbM7cVIJ3ZKVQ3dLi9YSzLE2BYVRqKqPhk";
+        var authHeader = new AuthenticationHeaderValue("Bearer", token);
+
+        _httpClient.DefaultRequestHeaders.Authorization = authHeader;
     }
 
     public StringContent CreateStringContent<T>(T model) => new(JsonConvert.SerializeObject(model), Encoding.UTF8, MediaTypeNames.Application.Json);
