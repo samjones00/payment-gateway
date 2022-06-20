@@ -14,7 +14,4 @@ public class TestBase
     }
 
     public static IEnumerable<string> NullOrWhiteSpaceStrings() => new List<string> { " ", "", null };
-
-    public static string CreateStringOfLength(int length) => new('0', length);
-
 }

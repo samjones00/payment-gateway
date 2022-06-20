@@ -35,11 +35,13 @@ public static class StartupExtensions
         services.AddTransient<IEncryptionProvider, WeakEncryptionProvider>();
 
         // Register repository and encryption decorator
-        services.AddTransient<InMemoryRepository>();
-        services.AddScoped<IRepository<Payment>>(provider => new CreditCardEncryptionDecorator(
-                provider.GetRequiredService<InMemoryRepository>(),
-                provider.GetRequiredService<IEncryptionProvider>()
-                ));
+        services.AddTransient<IRepository<Payment>, InMemoryRepository>();
+
+        //services.AddTransient<InMemoryRepository>();
+        //services.AddScoped<IRepository<Payment>>(provider => new CreditCardEncryptionDecorator(
+        //        provider.GetRequiredService<InMemoryRepository>(),
+        //        provider.GetRequiredService<IEncryptionProvider>()
+        //        ));
 
         return services;
     }

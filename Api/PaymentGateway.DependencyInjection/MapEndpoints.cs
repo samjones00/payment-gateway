@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
-using PaymentGateway.Domain;
 using PaymentGateway.Domain.Commands;
+using PaymentGateway.Domain.Constants;
 using PaymentGateway.Domain.Queries;
 using PaymentGateway.Domain.Responses;
 

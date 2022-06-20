@@ -4,15 +4,15 @@ namespace PaymentGateway.Domain.Extensions
 {
     public static class CardNumberExtensions
     {
-        public static string ToMaskedValue(this CardNumber source)
+        public static string ToMaskedString(this string source)
         {
-            if (string.IsNullOrEmpty(source.Value) || CardNumber.UnmaskedDigitCount >= source.Value.Length)
+            if (string.IsNullOrEmpty(source) || CardNumber.UnmaskedDigitCount >= source.Length)
             {
                 return string.Empty;
             }
 
-            string? masked = new(CardNumber.MaskCharacter, source.Value.Length - CardNumber.UnmaskedDigitCount);
-            var unmasked = source.Value.Remove(0, source.Value.Length - CardNumber.UnmaskedDigitCount);
+            var masked = new string(CardNumber.MaskCharacter, source.Length - CardNumber.UnmaskedDigitCount);
+            var unmasked = source.Remove(0, source.Length - CardNumber.UnmaskedDigitCount);
 
             return $"{masked}{unmasked}";
         }

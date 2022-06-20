@@ -8,18 +8,21 @@ namespace PaymentGateway.Domain.Validators
 {
     public class SubmitPaymentCommandValidator : AbstractValidator<SubmitPaymentCommand>
     {
+        private const string LettersAndSpacesOnly = "^[A-Za-z ]+$";
+        private const string NumbersOnly = "^[0-9]*$";
+
         public SubmitPaymentCommandValidator(IDateTimeProvider dateTimeProvider)
         {
             RuleFor(x => x.CardHolder)
                 .Length(CardHolder.MinimumLength, CardHolder.MaximumLength)
-                .Matches(RegexPatterns.LettersAndSpacesOnly);
+                .Matches(LettersAndSpacesOnly);
 
             RuleFor(x => x.CardNumber)
                 .Length(CardNumber.MinimumLength, CardNumber.MaximumLength);
 
             RuleFor(x => x.CVV)
                 .Length(CVV.MinimumLength, CVV.MaximumLength)
-                .Matches(RegexPatterns.NumbersOnly);
+                .Matches(NumbersOnly);
 
             RuleFor(x => x.ExpiryDateMonth)
                 .InclusiveBetween(1, 12);

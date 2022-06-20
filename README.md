@@ -62,7 +62,7 @@ sequenceDiagram
 
 
 ## JSON Web Tokens
-------------------
+--------
 Authentication and authorization is handled using JSON Web Tokens but due to time constraints and requirements I haven't provided a JWT issuer. However, below are some pre-generated bearer tokens which will authenticate and identify the request.
 
 ## Features
@@ -79,29 +79,40 @@ eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo1MTM4LyI
 eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo1MTM4LyIsImlhdCI6MTY1NTU4MjkxMCwiZXhwIjoxNjg3MTE4OTEwLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo1MTM4LyIsInN1YiI6IkFtYXpvbiJ9.3u77zp-pqHJdV79Lu92OxxzD6GaQ4gJK1YI_QKETA6g
 ```
 
+# Testing
+
+## Integration Tests
+
+lorem ipsum
+
+## Unit tests
+
+sit solor mit
+
+
 # Implementation Details
 
 ## API Routing
--------------
-I first implemented routes using `MapPost` or `MapGet` using the newer format, but then I found this in the fluent validation documentation at https://docs.fluentvalidation.net/en/latest/aspnet.html.
+
+I first implemented routes using `MapPost` or `MapGet` using the minimal api format, but then I found this in the  [fluent validation documentation](https://docs.fluentvalidation.net/en/latest/aspnet.html).
 
 > Note that Minimal APIs that are part of .NET 6 don’t support automatic validation.
 
-I have left the `MapRoutes.cs` class in `PaymentGateway.DependencyInjection` for reference.
+I have left the `MapRoutes.cs` class in the `PaymentGateway.DependencyInjection` project for reference.
 
-## Acquiring Bank
+## Connecting to the Acquiring Bank 
 
-All code and configuration for calling the mock CKO bank is separated into it's own `PaymentGateway.AcquiringBank.CKO` project, and is only referenced from the `PaymentGateway.Api` project using startup extensions.
+All code and configuration for calling the mock CKO bank is separated into its own `PaymentGateway.AcquiringBank.CKO` project, and is only referenced from the `PaymentGateway.Api` project using startup extensions.
 
 Benefits are:
 - Easy swapping out for other bank implementations
 - Replacing the mock with a real world bank or (vice versa) with minimal changes
 - A step closer for separating the acquiring banks into their own nuget packages for use in other applications.
-- Self contained including the appsettings
+- Self contained including the configuration
 
-## The Mock bank endpoint
+## The Mock Acquiring Bank
 
-I'm using a pre-built docker image called mockaco which allows 
+I'm using a pre-built docker image called [mockaco](https://github.com/natenho/Mockaco/) which allows you to describe the response you want to return given a specific request.
 
 ## Persistance
 
@@ -109,11 +120,11 @@ The payments are stored and updated using an in-memory cache, but could be swapp
 
 ## Data security
 
-The credit card number is base64 encoded on writing to the repository and decoded on read using a `CreditCardEncryptionDecorator`, ideally this would use encryption for a NoSQL database or use Column-Level SQL Server Encryption if available.
+The credit card number is base64 encoded on writing to the repository and decoded on read using the `CreditCardEncryptionDecorator`, ideally this would use encryption for a NoSQL database or use Column-Level SQL Server Encryption if available.
 
 ## Mapping
 
-Automapper is used throughout for mapping, the command/query/domain model mapping is found in `PaymentGateway.Domain` and any acquiring bank profiles are part of `PaymentGateway.AcquiringBank.CKO`.
+AutoMapper is used throughout, the command/query/domain model mapping is found in `PaymentGateway.Domain` and any acquiring bank mapping profiles are part of `PaymentGateway.AcquiringBank.CKO`.
 
 ```mermaid
 sequenceDiagram
@@ -131,3 +142,11 @@ sequenceDiagram
 # Extra mile bonus points
 
 - Retry policy with delay when calling the bank endpoint
+- JWT Authentcation and authorization
+- Encapsulation of the bank connector, allowing easy replacement
+- Encryption of credit card details
+
+# Next Steps
+
+- Host the API behind an API management portal which would handle the authentication, rate limiting, etc
+- Replace the In-Memory cache with a database, either using SQL Server with column-level encryption or NoSQL and access restrictions.

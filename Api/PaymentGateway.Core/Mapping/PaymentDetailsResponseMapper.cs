@@ -16,7 +16,7 @@ namespace PaymentGateway.Core.Mapping
                 .ForMember(dest => dest.Currency, opt => opt.MapFrom(src => src.Amount.Currency))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.PaymentStatus))
                 .ForMember(dest => dest.PaymentReference, opt => opt.MapFrom(src => src.PaymentReference.Value))
-                .ForMember(dest => dest.CardNumber, opt => opt.MapFrom(src => src.PaymentCard.CardNumber.ToMaskedValue()))
+                .ForMember(dest => dest.CardNumber, opt => opt.MapFrom(src => src.PaymentCard.CardNumber.Value.ToMaskedString()))
                 .ForMember(dest => dest.ProcessedOn, opt => opt.MapFrom(src => src.ProcessedOn))
                 .ForMember(dest => dest.IsAuthorised, opt => opt.MapFrom(src => src.PaymentStatus == PaymentStatus.Successful));
         }

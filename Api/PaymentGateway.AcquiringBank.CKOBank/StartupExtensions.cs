@@ -4,8 +4,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PaymentGateway.AcquiringBank.CKO.Models;
 using PaymentGateway.Core.Services;
-using PaymentGateway.Domain;
 using PaymentGateway.Domain.Configuration;
+using PaymentGateway.Domain.Constants;
 using PaymentGateway.Domain.Interfaces;
 using Polly;
 using Polly.Extensions.Http;
@@ -20,7 +20,7 @@ namespace PaymentGateway.AcquiringBank.CKO
             var options = section.Get<AcquiringBankOptions>();
 
             services
-                .AddHttpClient<BankConnectorService<Request, Response>>(HttpClientNames.ProcessPaymentHttpClientName, client =>
+                .AddHttpClient<BankConnectorService<Request, Response>>(HttpClientConstants.ProcessPaymentHttpClientName, client =>
                 {
                     client.BaseAddress = new Uri(options.BaseAddress);
                     client.ConfigureBankEndpointAuth();

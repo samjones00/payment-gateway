@@ -1,4 +1,4 @@
-﻿namespace PaymentGateway.Domain
+﻿namespace PaymentGateway.Domain.Constants
 {
     public static class ApiRoutes
     {

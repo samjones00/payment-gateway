@@ -5,8 +5,8 @@ using AutoMapper;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using PaymentGateway.Domain;
 using PaymentGateway.Domain.Configuration;
+using PaymentGateway.Domain.Constants;
 using PaymentGateway.Domain.Enums;
 using PaymentGateway.Domain.Exceptions;
 using PaymentGateway.Domain.Interfaces;
@@ -26,7 +26,7 @@ namespace PaymentGateway.Core.Services
             ArgumentNullException.ThrowIfNull(httpClientFactory);
             ArgumentNullException.ThrowIfNull(options);
 
-            _httpClient = httpClientFactory.CreateClient(HttpClientNames.ProcessPaymentHttpClientName);
+            _httpClient = httpClientFactory.CreateClient(HttpClientConstants.ProcessPaymentHttpClientName);
             _logger = logger ?? throw new NullReferenceException(nameof(logger));
             _mapper = mapper ?? throw new NullReferenceException(nameof(mapper));
             _options = options.Value;

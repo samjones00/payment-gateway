@@ -1,8 +1,8 @@
 using System.Net.Mime;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using PaymentGateway.Domain;
 using PaymentGateway.Domain.Commands;
+using PaymentGateway.Domain.Constants;
 using PaymentGateway.Domain.Enums;
 using PaymentGateway.Domain.Extensions;
 using PaymentGateway.Domain.Queries;
@@ -30,7 +30,7 @@ public class PaymentController : ControllerBase
     [ProducesResponseType(typeof(SubmitPaymentResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
-    public async Task<IActionResult> ProcessPayment(SubmitPaymentCommand command)
+    public async Task<IActionResult> SubmitPayment(SubmitPaymentCommand command)
     {
         var merchantReference = _httpContextAccessor.GetMerchantReference();
         command.MerchantReference = merchantReference;
