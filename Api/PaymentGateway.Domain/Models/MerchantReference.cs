@@ -1,4 +1,6 @@
-﻿namespace PaymentGateway.Domain.Models
+﻿using PaymentGateway.Domain.Extensions;
+
+namespace PaymentGateway.Domain.Models
 {
     public class MerchantReference
     {
@@ -6,12 +8,12 @@
 
         public static MerchantReference Create(string merchantReference)
         {
-            var result = new MerchantReference
+            merchantReference.ThrowIfNullOrWhiteSpace();
+
+            return new MerchantReference
             {
                 Value = merchantReference
             };
-
-            return result;
         }
     }
 }

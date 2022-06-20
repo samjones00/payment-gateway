@@ -1,4 +1,6 @@
-﻿namespace PaymentGateway.Domain.Models
+﻿using PaymentGateway.Domain.Extensions;
+
+namespace PaymentGateway.Domain.Models
 {
     public class PaymentReference
     {
@@ -7,6 +9,8 @@
 
         public static PaymentReference Create(string paymentReference)
         {
+            paymentReference.ThrowIfNullOrWhiteSpace();
+         
             return new PaymentReference
             {
                 Value = paymentReference

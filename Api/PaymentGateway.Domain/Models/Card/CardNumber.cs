@@ -1,4 +1,6 @@
-﻿namespace PaymentGateway.Domain.Models.Card
+﻿using PaymentGateway.Domain.Extensions;
+
+namespace PaymentGateway.Domain.Models.Card
 {
     public class CardNumber
     {
@@ -11,12 +13,12 @@
 
         public static CardNumber Create(string cardNumber)
         {
-            var result = new CardNumber
+            cardNumber.ThrowIfNullOrWhiteSpace();
+
+            return new CardNumber
             {
                 Value = cardNumber,
             };
-
-            return result;
         }
     }
 }

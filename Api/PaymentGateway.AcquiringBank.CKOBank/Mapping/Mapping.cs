@@ -10,7 +10,7 @@ namespace PaymentGateway.AcquiringBank.CKO.Mapping
             CreateMap<Domain.Models.Payment, Request>()
                 .ForMember(dest => dest.PaymentReference, opt => opt.MapFrom(src => src.PaymentReference.Value))
                 .ForMember(dest => dest.MerchantReference, opt => opt.MapFrom(src => src.MerchantReference.Value))
-                .ForMember(dest => dest.Currency, opt => opt.MapFrom(src => src.Amount.Currency))
+                .ForMember(dest => dest.Currency, opt => opt.MapFrom(src => src.Currency.Value))
                 .ForMember(dest => dest.PaymentCard, opt => opt.MapFrom(src => src.PaymentCard));
 
             CreateMap<Domain.Models.PaymentCard, PaymentCard>()
