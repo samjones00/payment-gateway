@@ -42,11 +42,13 @@ namespace PaymentGateway.Core.Services
 
             var response = await _httpClient.PostAsync(url, content, cancellationToken);
 
-            var json = await response.Content.ReadAsStringAsync(cancellationToken);
+            if(response.Content != null)
+            {
+                var json = await response.Content.ReadAsStringAsync(cancellationToken);
+                var responseModel = JsonConvert.DeserializeObject<TBankResponse>(json);
 
-            var responseModel = JsonConvert.DeserializeObject<TBankResponse>(json);
-
-            _logger.LogInformation(json, responseModel);
+                _logger.LogInformation(json, responseModel);
+            }
 
             return HandleStatusCode(response.StatusCode);
         }

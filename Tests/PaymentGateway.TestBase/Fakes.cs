@@ -42,6 +42,6 @@ namespace PaymentGateway.Tests.Shared
             };
         }
 
-        private static string CreateStringOfLength(int length) => new('0', length);
+        public static string CreateStringOfLength(int length) => new('0', length);
     }
 }

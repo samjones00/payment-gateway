@@ -94,17 +94,25 @@ Integration tests can be run from Visual Studio, whether they run against a host
 
 To run the integration tests, you can either run against the running application:
 
-1. Open a terminal window
+1. Open a terminal window to run the payment gateway:
 
 1. `CD payment-gateway\Api\PaymentGateway.Api`
 
 1. `dotnet run`
 
-1. Open another terminal window
+1. Open another terminal window to run the acceptance tests:
 
 1. `CD payment-gateway\Tests\PaymentGateway.Api.IntegrationTests`
 
-1. dotnet test
+1. Run `dotnet test` with a parameter, this will allow the tests to run over the localhost address:  
+    **cmd**  
+    `dotnet test  -- TestRunParameters.Parameter(name=\"UseInMemoryHttpClient\", value=\"false\")`
+
+    **powershell**  
+    `dotnet test --%  -- TestRunParameters.Parameter(name=\"UseInMemoryHttpClient\", value=\"false\") `
+
+    **bash**  
+    `dotnet test -- TestRunParameters.Parameter\(name=\"UseInMemoryHttpClient\",\ value=\"false\"\)`
 
 Or run against the in-memory application
 
@@ -112,16 +120,7 @@ Or run against the in-memory application
 
 1. `CD payment-gateway\Tests\PaymentGateway.Api.IntegrationTests`
 
-1. Run `dotnet test` with a parameter:  
-    **cmd**  
-    `dotnet test  -- TestRunParameters.Parameter(name=\"UseInMemoryHttpClient\", value=\"true\")`
-
-    **powershell**  
-    `dotnet test --%  -- TestRunParameters.Parameter(name=\"UseInMemoryHttpClient\", value=\"true\") `
-
-    **bash**  
-    `dotnet test -- TestRunParameters.Parameter\(name=\"UseInMemoryHttpClient\",\ value=\"true\"\)`
-
+1. dotnet test
 
 # Implementation Details
 
@@ -131,7 +130,7 @@ I first implemented routes using `MapPost` or `MapGet` using the minimal api for
 
 > Note that Minimal APIs that are part of .NET 6 don’t support automatic validation.
 
-I have left the `MapRoutes.cs` class in the `PaymentGateway.DependencyInjection` project for reference.
+I then re-wrote the routing in the Controller style.
 
 ## Connecting to the Acquiring Bank 
 
@@ -153,7 +152,7 @@ The payments are stored and updated using an in-memory cache, but could be swapp
 
 ## Data security
 
-The credit card number is base64 encoded on writing to the repository and decoded on read using the `CreditCardEncryptionDecorator`, ideally this would use encryption for a NoSQL database or use Column-Level SQL Server Encryption if available.
+I thought about adding an IRepository decorator, encrypting on add/update and decrypting on read. I decided against this as it was "out of scope", but i'm not happy with storing card details in plain text NoSql database unless there were access restrictions or some other mechanism.
 
 ## Mapping
 
@@ -174,12 +173,13 @@ sequenceDiagram
 
 # Extra mile bonus points
 
+- JWT Authentication and authorization
 - Retry policy with delay when calling the bank endpoint
-- JWT Authentcation and authorization
 - Encapsulation of the bank connector, allowing easy replacement
-- Encryption of credit card details
+
 
 # Next Steps
 
 - Host the API behind an API management portal which would handle the authentication, rate limiting, etc
 - Replace the In-Memory cache with a database, either using SQL Server with column-level encryption or NoSQL and access restrictions.
+- Add logging, both local plain text logging and a hosted platform such as Application Insights

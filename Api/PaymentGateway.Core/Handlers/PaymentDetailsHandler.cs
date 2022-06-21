@@ -20,12 +20,12 @@ public class PaymentDetailsHandler : IRequestHandler<PaymentDetailsQuery, Paymen
         _repository = repository ?? throw new ArgumentNullException(nameof(repository));
     }
 
-    public async Task<PaymentDetailsResponse> Handle(PaymentDetailsQuery query, CancellationToken cancellationToken)
+    public Task<PaymentDetailsResponse> Handle(PaymentDetailsQuery query, CancellationToken cancellationToken)
     {
         var payment = _repository.Get(query.MerchantReference, query.PaymentReference);
 
         var details = _mapper.Map<PaymentDetailsResponse>(payment);
 
-        return details;
+        return Task.FromResult(details);
     }
 }
