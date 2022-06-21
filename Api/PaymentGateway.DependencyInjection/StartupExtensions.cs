@@ -32,16 +32,7 @@ public static class StartupExtensions
 
         // Register dependency injection
         services.AddTransient<IDateTimeProvider, DateTimeProvider>();
-        services.AddTransient<IEncryptionProvider, WeakEncryptionProvider>();
-
-        // Register repository and encryption decorator
         services.AddTransient<IRepository<Payment>, InMemoryRepository>();
-
-        //services.AddTransient<InMemoryRepository>();
-        //services.AddScoped<IRepository<Payment>>(provider => new CreditCardEncryptionDecorator(
-        //        provider.GetRequiredService<InMemoryRepository>(),
-        //        provider.GetRequiredService<IEncryptionProvider>()
-        //        ));
 
         return services;
     }
