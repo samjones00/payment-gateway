@@ -1,11 +1,11 @@
 using System.Net;
-using FluentAssertions;
 using AutoFixture;
+using FluentAssertions;
 using NUnit.Framework;
 using PaymentGateway.Domain.Constants;
+using PaymentGateway.Domain.Responses;
 using PaymentGateway.Tests.Shared;
 using PaymentGateway.Tests.Shared.Extensions;
-using PaymentGateway.Domain.Responses;
 
 namespace IntegrationTests;
 
@@ -44,7 +44,7 @@ public class SubmitPaymentIntegrationTests : IntegrationTestBase
 
         // Then
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-       
+
         var expectedResponse = new SubmitPaymentResponse
         {
             PaymentReference = command.PaymentReference,

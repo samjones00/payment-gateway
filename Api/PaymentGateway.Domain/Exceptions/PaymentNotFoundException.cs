@@ -9,6 +9,11 @@ namespace PaymentGateway.Domain.Exceptions
         private string paymentReference;
         private string merchantReference;
 
+        public PaymentNotFoundException()
+        {
+
+        }
+
         public PaymentNotFoundException(string? message, string paymentReference, string merchantReference) : base(message)
         {
             this.paymentReference = paymentReference;

@@ -1,6 +1,5 @@
 using System.Net;
 using AutoMapper;
-using MediatR;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq.Protected;

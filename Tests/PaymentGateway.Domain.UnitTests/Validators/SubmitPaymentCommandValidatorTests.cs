@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using PaymentGateway.Domain.Commands;
 using PaymentGateway.Domain.Interfaces;
 using PaymentGateway.Domain.Validators;
 using PaymentGateway.Tests.Shared;
@@ -31,7 +25,7 @@ namespace PaymentGateway.Domain.UnitTests.Validators
 
             var command = Fakes.ValidSubmitPaymentCommand();
             command.CVV = "ABC";
-            
+
             var sut = new SubmitPaymentCommandValidator(_mockDateTimeProvider.Object);
 
             // When

@@ -2,13 +2,14 @@ using System.Security.Authentication;
 using System.Security.Claims;
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using PaymentGateway.Api.Controllers;
 using PaymentGateway.Domain.Enums;
+using PaymentGateway.Domain.Exceptions;
+using PaymentGateway.Domain.Queries;
 using PaymentGateway.Domain.Responses;
 using PaymentGateway.Tests.Shared;
-using Microsoft.AspNetCore.Mvc;
-using PaymentGateway.Domain.Queries;
 using PaymentGateway.Tests.Shared.Extensions;
 
 namespace PaymentControllerTests;
@@ -35,10 +36,11 @@ public class GetPaymentDetailsTests : TestBase
     public async Task Given_Null_Payment_Reference_When_Invoking_Then_Should_Throw_Argument_Null_Exception(string paymentReference)
     {
         // Given & When
-        var result = async () => await _sut.GetPaymentDetails(paymentReference);
+        var result = await _sut.GetPaymentDetails(paymentReference);
 
         // Then
-        await result.Should().ThrowAsync<ArgumentNullException>().WithParameterName("paymentReference");
+        var httpResult = result as BadRequestObjectResult;
+        httpResult.Value.Should().Be("Value cannot be null. (Parameter 'paymentReference')");
     }
 
     [Test]
@@ -75,39 +77,26 @@ public class GetPaymentDetailsTests : TestBase
         result.Should().BeOfType<OkObjectResult>();
     }
 
-    [Test, Ignore("cant call IExceptionHandlerPathFeature")]
+    [Test]
     public async Task Given_Non_Existing_Payment_Reference_When_Invoking_Then_Should_Return_Not_Found()
     {
         // Given
-        //_mockHttpContextAccessor.SetupWithClaim();
+        _mockHttpContextAccessor.SetupWithClaim();
 
-        //var paymentReference = _fixture.Create<string>();
-        //var response = _fixture.Build<PaymentDetailsResponse>()
-        //    .With(x => x.PaymentStatus, PaymentStatus.Unsuccessful.ToString())
-        //    .Create();
+        var merchantReference = _fixture.Create<string>();
+        var paymentReference = _fixture.Create<string>();
+        var response = _fixture.Build<PaymentDetailsResponse>()
+            .With(x => x.PaymentStatus, PaymentStatus.Unsuccessful.ToString())
+            .Create();
 
-        //var mockIFeatureCollection = _mockRepository.Create<IFeatureCollection>();
-        //mockIFeatureCollection.Setup(p => p.Get<IExceptionHandlerPathFeature>())
-        //    .Returns(new ExceptionHandlerFeature
-        //    {
-        //        Path = "/996/icu",
-        //        Error = new("Too much fubao")
-        //    });
+        _mockMediator.Setup(m => m.Send(It.IsAny<PaymentDetailsQuery>(), It.IsAny<CancellationToken>()))
+            .Throws(new PaymentNotFoundException($"Payment not found.", paymentReference, merchantReference));
 
-        //var httpContextMock = _mockRepository.Create<HttpContext>();
+        // When
+        var result = await _sut.GetPaymentDetails(paymentReference);
 
-        //httpContextMock.Setup(p => p.Features).Returns(mockIFeatureCollection.Object);
-
-        //_sut.ControllerContext = new ControllerContext();
-        //_sut.ControllerContext.HttpContext = httpContextMock.Object;
-
-
-        //_mockMediator.Setup(m => m.Send(It.IsAny<PaymentDetailsQuery>(), It.IsAny<CancellationToken>())).Throws<PaymentNotFoundException>();
-
-        //// When
-        //var result = await _sut.GetPaymentDetails(paymentReference);
-
-        //// Then
-        //result.Should().BeOfType<NotFoundResult>();
+        // Then
+        var httpResult = result as NotFoundObjectResult;
+        httpResult.Value.Should().Be("Payment not found.");
     }
 }

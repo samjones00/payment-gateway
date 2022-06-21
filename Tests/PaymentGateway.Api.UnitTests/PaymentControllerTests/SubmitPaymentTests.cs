@@ -1,13 +1,13 @@
 using System.Security.Authentication;
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using PaymentGateway.Api.Controllers;
 using PaymentGateway.Domain.Commands;
 using PaymentGateway.Domain.Enums;
 using PaymentGateway.Domain.Responses;
 using PaymentGateway.Tests.Shared;
-using Microsoft.AspNetCore.Mvc;
 using PaymentGateway.Tests.Shared.Extensions;
 
 namespace PaymentControllerTests;
@@ -34,10 +34,12 @@ public class SubmitPaymentTests : TestBase
     public async Task Given_Null_Payment_Reference_When_Invoking_Then_Sholuld_Throw_Argument_Null_Exception()
     {
         // Given & When
-        var result = async () => await _sut.SubmitPayment(null);
+        var response = await _sut.SubmitPayment(null);
 
         // Then
-        await result.Should().ThrowAsync<ArgumentNullException>().WithParameterName("command");
+        var httpResult = response as BadRequestObjectResult;
+        httpResult.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
+        httpResult.Value.Should().Be("Value cannot be null. (Parameter 'command')");
     }
 
     [Test]
@@ -49,10 +51,10 @@ public class SubmitPaymentTests : TestBase
         var command = Fakes.ValidSubmitPaymentCommand();
 
         // When
-        var result = async () => await _sut.SubmitPayment(command);
+        var response = await _sut.SubmitPayment(command);
 
         // Then
-        await result.Should().ThrowAsync<AuthenticationException>().WithMessage("Claim 'NameIdentifier' not found.");
+        var httpResult = response as UnauthorizedObjectResult;
     }
 
     [Test]

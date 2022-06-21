@@ -1,9 +1,11 @@
 using System.Net.Mime;
+using System.Security.Authentication;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using PaymentGateway.Domain.Commands;
 using PaymentGateway.Domain.Constants;
 using PaymentGateway.Domain.Enums;
+using PaymentGateway.Domain.Exceptions;
 using PaymentGateway.Domain.Extensions;
 using PaymentGateway.Domain.Queries;
 using PaymentGateway.Domain.Responses;
@@ -32,15 +34,18 @@ public class PaymentController : ControllerBase
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> SubmitPayment(SubmitPaymentCommand command)
     {
-        ArgumentNullException.ThrowIfNull(command);
+        return await Handle(async () =>
+        {
+            ArgumentNullException.ThrowIfNull(command);
 
-        var merchantReference = _httpContextAccessor.GetMerchantReference();
-        command.MerchantReference = merchantReference;
-        var response = await _mediator.Send(command);
+            var merchantReference = _httpContextAccessor.GetMerchantReference();
+            command.MerchantReference = merchantReference;
+            var response = await _mediator.Send(command);
 
-        return response.PaymentStatus == PaymentStatus.Successful.ToString()
-            ? CreatedAtAction(nameof(GetPaymentDetails), new { response.PaymentReference }, response)
-            : BadRequest(response);
+            return response.PaymentStatus == PaymentStatus.Successful.ToString()
+                ? CreatedAtAction(nameof(GetPaymentDetails), new { response.PaymentReference }, response)
+                : BadRequest(response);
+        });
     }
 
     [HttpGet(ApiRoutes.GetPaymentDetails)]
@@ -49,9 +54,44 @@ public class PaymentController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetPaymentDetails(string paymentReference)
     {
-        paymentReference.ThrowIfNullOrWhiteSpace();
+        return await Handle(async () =>
+        {
+            paymentReference.ThrowIfNullOrWhiteSpace();
 
-        var response = await _mediator.Send(new PaymentDetailsQuery(_httpContextAccessor.GetMerchantReference(), paymentReference));
-        return Ok(response);
+            var response = await _mediator.Send(new PaymentDetailsQuery(_httpContextAccessor.GetMerchantReference(), paymentReference));
+            return Ok(response);
+        });
+    }
+
+    private async Task<IActionResult> Handle(Func<Task<IActionResult>> func)
+    {
+        try
+        {
+            return await func.Invoke();
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        catch (PaymentNotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
+        catch (PaymentAlreadyExistsException ex)
+        {
+            return Conflict(ex.Message);
+        }
+        catch (AuthenticationException ex)
+        {
+            return Unauthorized(ex.Message);
+        }        
+        catch (AcquiringBankException ex)
+        {
+            return StatusCode(StatusCodes.Status503ServiceUnavailable);
+        }
+        catch (Exception)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError);
+        }
     }
 }
