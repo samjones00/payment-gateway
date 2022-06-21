@@ -38,7 +38,7 @@ public class SubmitPaymentHandler : IRequestHandler<SubmitPaymentCommand, Submit
 
         _repository.Insert(payment);
 
-        var bankResponseStatus = await _bankConnectorService.Process(payment, cancellationToken);
+        var bankResponseStatus = await _bankConnectorService.ProcessPayment(payment, cancellationToken);
 
         payment.PaymentStatus = bankResponseStatus;
         payment.ProcessedOn = _dateTimeProvider.UtcNow();

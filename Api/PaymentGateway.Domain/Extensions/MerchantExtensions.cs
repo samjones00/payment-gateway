@@ -10,14 +10,16 @@ namespace PaymentGateway.Domain.Extensions
         {
             ArgumentNullException.ThrowIfNull(httpContextAccessor);
 
-            var subject = httpContextAccessor.HttpContext.User.Claims.Single(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+            static bool typeExpression(Claim x) => x.Type == ClaimTypes.NameIdentifier;
 
-            if (subject is null)
+            var exists = httpContextAccessor.HttpContext.User.Claims.Any(typeExpression);
+
+            if (!exists)
             {
-                throw new AuthenticationException($"Claim '{ClaimTypes.NameIdentifier}' cannot be empty.");
+                throw new AuthenticationException($"Claim '{nameof(ClaimTypes.NameIdentifier)}' not found.");
             }
 
-            return subject;
+            return httpContextAccessor.HttpContext.User.Claims.Single(typeExpression)?.Value;
         }
     }
 }

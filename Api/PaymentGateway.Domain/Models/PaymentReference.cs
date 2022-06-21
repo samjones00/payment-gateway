@@ -10,7 +10,7 @@ namespace PaymentGateway.Domain.Models
         public static PaymentReference Create(string paymentReference)
         {
             paymentReference.ThrowIfNullOrWhiteSpace();
-         
+
             return new PaymentReference
             {
                 Value = paymentReference

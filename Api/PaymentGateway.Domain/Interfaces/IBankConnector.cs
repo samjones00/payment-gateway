@@ -5,6 +5,6 @@ namespace PaymentGateway.Domain.Interfaces
 {
     public interface IBankConnector
     {
-        Task<PaymentStatus> Process(Payment payment, CancellationToken cancellationToken);
+        Task<PaymentStatus> ProcessPayment(Payment payment, CancellationToken cancellationToken);
     }
 }

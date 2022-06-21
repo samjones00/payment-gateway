@@ -1,4 +1,3 @@
-using Moq;
 
 namespace PaymentGateway.Tests.Shared;
 
@@ -14,4 +13,12 @@ public class TestBase
     }
 
     public static IEnumerable<string> NullOrWhiteSpaceStrings() => new List<string> { " ", "", null };
+
+    public void RunGuardClauseChecks<T>()
+    {
+        var fixture = new Fixture().Customize(new AutoMoqCustomization());
+
+        var assert = new GuardClauseAssertion(fixture);
+        assert.Verify(typeof(T).GetConstructors());
+    }
 }

@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+  <TestRunParameters>
+    <Parameter name="UseInMemoryHttpClient" value="true"/>
+    <Parameter name="GatewayBaseUrl" value="https://localhost:7196/"/>
+    <Parameter name="BearerToken" value="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo1MTM4LyIsImlhdCI6MTY1NTU4MjkxMCwiZXhwIjoxNjg3MTE4OTEwLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo1MTM4LyIsInN1YiI6IlRlc3RNZXJjaGFudCJ9.LgOAUI9ts1PveaaqZmAsaSnBBSPjcM6Usbn6cuZhC9U"/>
+  </TestRunParameters>
+</RunSettings>

@@ -32,6 +32,8 @@ public class PaymentController : ControllerBase
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> SubmitPayment(SubmitPaymentCommand command)
     {
+        ArgumentNullException.ThrowIfNull(command);
+
         var merchantReference = _httpContextAccessor.GetMerchantReference();
         command.MerchantReference = merchantReference;
         var response = await _mediator.Send(command);
@@ -47,6 +49,8 @@ public class PaymentController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetPaymentDetails(string paymentReference)
     {
+        paymentReference.ThrowIfNullOrWhiteSpace();
+
         var response = await _mediator.Send(new PaymentDetailsQuery(_httpContextAccessor.GetMerchantReference(), paymentReference));
         return Ok(response);
     }

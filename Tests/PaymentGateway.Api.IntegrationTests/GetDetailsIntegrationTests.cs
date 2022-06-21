@@ -7,19 +7,12 @@ using PaymentGateway.Domain.Enums;
 using PaymentGateway.Domain.Extensions;
 using PaymentGateway.Domain.Responses;
 using PaymentGateway.Tests.Shared;
-using PaymentGateway.Tests.Shared.Enums;
 using PaymentGateway.Tests.Shared.Extensions;
 
-namespace PaymentGateway.Api.IntegrationTests;
+namespace IntegrationTests;
 
 public class GetDetailsIntegrationTests : IntegrationTestBase
 {
-    [SetUp]
-    public void SetUp()
-    {
-        SetupHttpClient(HttpClientType.InMemory);
-    }
-
     [Test]
     public async Task Given_Invalid_PaymentReference_When_Requesting_Payment_Details_Should_Return_NotFound()
     {
@@ -37,7 +30,7 @@ public class GetDetailsIntegrationTests : IntegrationTestBase
     }
 
     [Test]
-    public async Task Given_Valid_PaymentReference_When_Requesting_Payment_Details_Should_Return_Content()
+    public async Task Given_Valid_PaymentReference_When_Requesting_Payment_Details_Should_Return_PaymentDetailsResponse()
     {
         // Given
         ApplyBearerAuthToken();
@@ -61,7 +54,7 @@ public class GetDetailsIntegrationTests : IntegrationTestBase
             CardNumber = command.CardNumber.ToMaskedString(),
             IsAuthorised = true,
             PaymentReference = command.PaymentReference,
-            Status = PaymentStatus.Successful.ToString(),
+            PaymentStatus = PaymentStatus.Successful.ToString(),
             Currency = command.Currency,
         };
 

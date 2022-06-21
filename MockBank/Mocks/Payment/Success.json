@@ -4,7 +4,7 @@
       "route": "process/{id}"
     },
     "response": {
-      "status": "OK",
+      "status": "Created",
       "body": {
         "Status": "Success",
         "OrderReference": "<#= Request.Route["id"]?.ToString() #>"

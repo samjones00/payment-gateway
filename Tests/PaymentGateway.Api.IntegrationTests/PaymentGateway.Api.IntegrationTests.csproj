@@ -4,7 +4,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-
+    <RunSettingsFilePath>$(MSBuildProjectDirectory)\acceptance.runsettings</RunSettingsFilePath>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
@@ -29,6 +29,12 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Api\PaymentGateway.Api\PaymentGateway.Api.csproj" />
     <ProjectReference Include="..\PaymentGateway.TestBase\PaymentGateway.Tests.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="acceptance.runsettings">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

@@ -27,13 +27,15 @@ namespace PaymentGateway.Core.Services
             ArgumentNullException.ThrowIfNull(options);
 
             _httpClient = httpClientFactory.CreateClient(HttpClientConstants.ProcessPaymentHttpClientName);
-            _logger = logger ?? throw new NullReferenceException(nameof(logger));
-            _mapper = mapper ?? throw new NullReferenceException(nameof(mapper));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _options = options.Value;
         }
 
-        public async Task<PaymentStatus> Process(Payment payment, CancellationToken cancellationToken)
+        public async Task<PaymentStatus> ProcessPayment(Payment payment, CancellationToken cancellationToken)
         {
+            ArgumentNullException.ThrowIfNull(payment);
+
             var request = _mapper.Map<TBankRequest>(payment);
             var content = CreateStringContent(request);
             var url = _options.PaymentEndpoint.Replace(nameof(payment.PaymentReference), payment.PaymentReference.Value);
@@ -42,17 +44,17 @@ namespace PaymentGateway.Core.Services
 
             var json = await response.Content.ReadAsStringAsync(cancellationToken);
 
-            _logger.LogInformation(json);
+            var responseModel = JsonConvert.DeserializeObject<TBankResponse>(json);
+
+            _logger.LogInformation(json, responseModel);
 
             return HandleStatusCode(response.StatusCode);
         }
 
         public static PaymentStatus HandleStatusCode(HttpStatusCode statusCode) => statusCode switch
         {
-            HttpStatusCode.OK => PaymentStatus.Successful,
             HttpStatusCode.BadRequest => PaymentStatus.Unsuccessful,
-            HttpStatusCode.Accepted => PaymentStatus.Pending,
-            HttpStatusCode.Conflict => PaymentStatus.Unsuccessful,
+            HttpStatusCode.Accepted => PaymentStatus.Successful,
             _ => throw new AcquiringBankException($"Unexpected status code: {statusCode}"),
         };
 

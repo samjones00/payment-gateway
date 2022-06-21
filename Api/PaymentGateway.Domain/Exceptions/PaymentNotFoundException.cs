@@ -1,6 +1,9 @@
-﻿namespace PaymentGateway.Domain.Exceptions
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace PaymentGateway.Domain.Exceptions
 {
     [Serializable]
+    [ExcludeFromCodeCoverage]
     public class PaymentNotFoundException : Exception
     {
         private string paymentReference;

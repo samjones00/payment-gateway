@@ -1,8 +1,10 @@
-﻿using FluentValidation;
+﻿using System.Diagnostics.CodeAnalysis;
+using FluentValidation;
 using PaymentGateway.Domain.Configuration;
 
 namespace PaymentGateway.Domain.Validators
 {
+    [ExcludeFromCodeCoverage]
     public class AcquiringBankOptionsValidator : AbstractValidator<AcquiringBankOptions>
     {
         public AcquiringBankOptionsValidator()

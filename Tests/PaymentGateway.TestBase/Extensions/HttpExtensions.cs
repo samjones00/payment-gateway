@@ -13,7 +13,7 @@ namespace PaymentGateway.Tests.Shared.Extensions
         public static async Task<IEnumerable<string>> GetValidationErrorMessages(this HttpResponseMessage httpResponseMessage)
         {
             var validationProblemDetails = await httpResponseMessage.Content.ReadAsAsync<ValidationProblemDetails>();
-            return validationProblemDetails.Errors.Select(x => x.Value).SelectMany(x => x);         
+            return validationProblemDetails.Errors.Select(x => x.Value).SelectMany(x => x);
         }
     }
 }

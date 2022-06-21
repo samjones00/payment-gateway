@@ -1,6 +1,9 @@
-﻿namespace PaymentGateway.Domain.Exceptions
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace PaymentGateway.Domain.Exceptions
 {
     [Serializable]
+    [ExcludeFromCodeCoverage]
     public class PaymentAlreadyExistsException : Exception
     {
         private string paymentReference;

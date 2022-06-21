@@ -1,26 +1,16 @@
 using System.Net;
-using System.Web.Http;
 using FluentAssertions;
-using Microsoft.AspNetCore.Mvc;
+using AutoFixture;
 using NUnit.Framework;
-using PaymentGateway.Domain.Commands;
 using PaymentGateway.Domain.Constants;
 using PaymentGateway.Tests.Shared;
-using PaymentGateway.Tests.Shared.Enums;
 using PaymentGateway.Tests.Shared.Extensions;
+using PaymentGateway.Domain.Responses;
 
-namespace PaymentGateway.Api.IntegrationTests;
+namespace IntegrationTests;
 
 public class SubmitPaymentIntegrationTests : IntegrationTestBase
 {
-    public const string BadRequestPaymentReference = "ba1c9df4-001e-4922-9efa-488b59850bc4";
-
-    [SetUp]
-    public void SetUp()
-    {
-        SetupHttpClient(HttpClientType.InMemory);
-    }
-    
     [Test]
     public async Task Given_Valid_Request_When_Processing_Should_Return_Created()
     {
@@ -28,6 +18,7 @@ public class SubmitPaymentIntegrationTests : IntegrationTestBase
         ApplyBearerAuthToken();
 
         var command = Fakes.ValidSubmitPaymentCommand();
+        command.PaymentReference = _fixture.Create<string>();
         var content = command.ToStringContent();
 
         // When
@@ -37,14 +28,14 @@ public class SubmitPaymentIntegrationTests : IntegrationTestBase
         result.StatusCode.Should().Be(HttpStatusCode.Created);
     }
 
-    [Test, Ignore("review")]
-    public async Task Given_Declined_CardNumber_When_Processing_Should_Return_Declined()
+    [Test]
+    public async Task Given_Unsuccessful_CardNumber_When_Processing_Should_Return_Unsuccessful()
     {
         // Given
         ApplyBearerAuthToken();
 
         var command = Fakes.ValidSubmitPaymentCommand();
-        command.PaymentReference = BadRequestPaymentReference;
+        command.PaymentReference = Constants.UnsuccessfulPaymentReference;
 
         var content = command.ToStringContent();
 
@@ -53,6 +44,16 @@ public class SubmitPaymentIntegrationTests : IntegrationTestBase
 
         // Then
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+       
+        var expectedResponse = new SubmitPaymentResponse
+        {
+            PaymentReference = command.PaymentReference,
+            PaymentStatus = "Unsuccessful"
+        };
+
+        var actualResponse = await response.Content.ReadAsAsync<SubmitPaymentResponse>();
+
+        expectedResponse.Should().BeEquivalentTo(actualResponse, assertionOptions => assertionOptions.Excluding(x => x.ProcessedOn));
     }
 
     [Test]
@@ -74,6 +75,7 @@ public class SubmitPaymentIntegrationTests : IntegrationTestBase
 
         var validationErrors = await result.GetValidationErrorMessages();
 
+        validationErrors.Count().Should().Be(1);
         validationErrors.Should().Contain("'Amount' must be greater than '0.0'.");
     }
 
@@ -96,6 +98,7 @@ public class SubmitPaymentIntegrationTests : IntegrationTestBase
 
         var validationErrors = await result.GetValidationErrorMessages();
 
+        validationErrors.Count().Should().Be(1);
         validationErrors.Should().Contain("'Card Holder' is not in the correct format.");
     }
 
@@ -118,7 +121,10 @@ public class SubmitPaymentIntegrationTests : IntegrationTestBase
 
         var validationErrors = await result.GetValidationErrorMessages();
 
+        validationErrors.Count().Should().Be(2);
+
         validationErrors.Should().Contain("'Card Number' is not in the correct format.");
+        validationErrors.Should().Contain($"'Card Number' must be between 14 and 16 characters. You entered {command.CardNumber.Length} characters.");
     }
 
     [Test]
@@ -140,6 +146,7 @@ public class SubmitPaymentIntegrationTests : IntegrationTestBase
 
         var validationErrors = await result.GetValidationErrorMessages();
 
+        validationErrors.Count().Should().Be(1);
         validationErrors.Should().Contain("'Currency' is not in the correct format.");
     }
 
@@ -162,6 +169,7 @@ public class SubmitPaymentIntegrationTests : IntegrationTestBase
 
         var validationErrors = await result.GetValidationErrorMessages();
 
+        validationErrors.Count().Should().Be(1);
         validationErrors.Should().Contain("'CVV' is not in the correct format.");
     }
 
@@ -184,6 +192,7 @@ public class SubmitPaymentIntegrationTests : IntegrationTestBase
 
         var validationErrors = await result.GetValidationErrorMessages();
 
+        validationErrors.Count().Should().Be(1);
         validationErrors.Should().Contain("'Expiry Date Month' must be between 1 and 12. You entered 23.");
     }
 
@@ -206,6 +215,7 @@ public class SubmitPaymentIntegrationTests : IntegrationTestBase
 
         var validationErrors = await result.GetValidationErrorMessages();
 
+        validationErrors.Count().Should().Be(1);
         validationErrors.Should().Contain($"'Expiry Date Year' must be greater than or equal to '{DateTime.Now.Year}'.");
     }
 
@@ -228,6 +238,7 @@ public class SubmitPaymentIntegrationTests : IntegrationTestBase
 
         var validationErrors = await result.GetValidationErrorMessages();
 
+        validationErrors.Count().Should().Be(1);
         validationErrors.Should().Contain("'Payment Reference' must be 36 characters in length. You entered 3 characters.");
     }
 }

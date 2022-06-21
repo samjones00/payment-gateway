@@ -4,21 +4,14 @@ using FluentAssertions;
 using NUnit.Framework;
 using PaymentGateway.Domain.Constants;
 using PaymentGateway.Tests.Shared;
-using PaymentGateway.Tests.Shared.Enums;
 using PaymentGateway.Tests.Shared.Extensions;
 
-namespace PaymentGateway.Api.IntegrationTests;
+namespace IntegrationTests;
 
 public class AuthenticationIntegrationTests : IntegrationTestBase
 {
-    [SetUp]
-    public void SetUp()
-    {
-        SetupHttpClient(HttpClientType.InMemory);
-    }
-
     [Test]
-    public async Task Given_Invalid_Bearer_Token_When_Sending_Valid_Command_Should_Return_Forbidden()
+    public async Task Given_No_Bearer_Token_When_Sending_Valid_Command_Should_Return_Unauthorized()
     {
         // Given
         var command = Fakes.ValidSubmitPaymentCommand();
@@ -32,7 +25,7 @@ public class AuthenticationIntegrationTests : IntegrationTestBase
     }
 
     [Test]
-    public async Task Given_Invalid_Bearer_Token_When_Requesting_Payment_Details_Should_Return_Forbidden()
+    public async Task Given_No_Bearer_Token_When_Requesting_Payment_Details_Should_Return_Unauthorized()
     {
         // Given
         var paymentReference = _fixture.Create<string>();
