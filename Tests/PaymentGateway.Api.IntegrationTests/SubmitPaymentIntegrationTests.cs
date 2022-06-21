@@ -37,7 +37,7 @@ public class SubmitPaymentIntegrationTests : IntegrationTestBase
         result.StatusCode.Should().Be(HttpStatusCode.Created);
     }
 
-    [Test]
+    [Test, Ignore("review")]
     public async Task Given_Declined_CardNumber_When_Processing_Should_Return_Declined()
     {
         // Given
