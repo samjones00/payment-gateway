@@ -22,6 +22,6 @@ namespace PaymentGateway.Domain.Models.Card
 
         public DateOnly Value => value;
 
-        public static ExpiryDate Empty => new();    
+        public static ExpiryDate Empty => new();
     }
 }

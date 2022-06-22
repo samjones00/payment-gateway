@@ -126,11 +126,11 @@ Or run against the in-memory application
 
 ## API Routing
 
-I first implemented routes using `MapPost` or `MapGet` using the minimal api format, but then I found this in the  [fluent validation documentation](https://docs.fluentvalidation.net/en/latest/aspnet.html).
+I first implemented routes using `MapPost` and `MapGet` using the minimal api format, but then I found this in the  [fluent validation documentation](https://docs.fluentvalidation.net/en/latest/aspnet.html).
 
 > Note that Minimal APIs that are part of .NET 6 don’t support automatic validation.
 
-I then re-wrote the routing in the Controller style.
+I then re-wrote the routing in the Controller style as I wanted the request validation to be handled via the middleware.
 
 ## Connecting to the Acquiring Bank 
 
@@ -156,7 +156,7 @@ I thought about adding an IRepository decorator, encrypting on add/update and de
 
 ## Mapping
 
-AutoMapper is used throughout, the command/query/domain model mapping is found in `PaymentGateway.Domain` and any acquiring bank mapping profiles are part of `PaymentGateway.AcquiringBank.CKO`.
+AutoMapper is used throughout, the command/query/domain model mapping is found in `PaymentGateway.Domain` and the acquiring bank mapping profiles are part of `PaymentGateway.AcquiringBank.CKO`.
 
 ```mermaid
 sequenceDiagram
@@ -182,4 +182,4 @@ sequenceDiagram
 
 - Host the API behind an API management portal which would handle the authentication, rate limiting, etc
 - Replace the In-Memory cache with a database, either using SQL Server with column-level encryption or NoSQL and access restrictions.
-- Add logging, both local plain text logging and a hosted platform such as Application Insights
+- Add logging, both local plain text logging using serilog and a hosted platform such as Application Insights

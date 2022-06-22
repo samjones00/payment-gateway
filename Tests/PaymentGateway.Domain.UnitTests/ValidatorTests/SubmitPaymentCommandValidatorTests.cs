@@ -5,7 +5,7 @@ using PaymentGateway.Domain.Interfaces;
 using PaymentGateway.Domain.Validators;
 using PaymentGateway.Tests.Shared;
 
-namespace PaymentGateway.Domain.UnitTests.Validators
+namespace ValidatorTests
 {
     public class SubmitPaymentCommandValidatorTests : TestBase
     {

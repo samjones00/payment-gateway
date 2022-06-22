@@ -17,7 +17,7 @@ namespace PaymentGateway.Domain.Models
         }
 
         public string Value => value;
-        
+
         public static MerchantReference Empty => new();
     }
 }
