@@ -4,7 +4,7 @@ namespace PaymentGateway.Domain.Models
 {
     public class MerchantReference
     {
-        public string Value { get; private set; }
+        private string value { get; init; } = string.Empty;
 
         public static MerchantReference Create(string merchantReference)
         {
@@ -12,8 +12,12 @@ namespace PaymentGateway.Domain.Models
 
             return new MerchantReference
             {
-                Value = merchantReference
+                value = merchantReference
             };
         }
+
+        public string Value => value;
+        
+        public static MerchantReference Empty => new();
     }
 }

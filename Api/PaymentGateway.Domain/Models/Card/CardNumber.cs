@@ -9,7 +9,7 @@ namespace PaymentGateway.Domain.Models.Card
         public const int UnmaskedDigitCount = 4;
         public const char MaskCharacter = 'X';
 
-        public string Value { get; private set; }
+        private string value { get; init; } = string.Empty;
 
         public static CardNumber Create(string cardNumber)
         {
@@ -17,8 +17,12 @@ namespace PaymentGateway.Domain.Models.Card
 
             return new CardNumber
             {
-                Value = cardNumber,
+                value = cardNumber,
             };
         }
+
+        public string Value => value;
+
+        public static CardNumber Empty => new();
     }
 }

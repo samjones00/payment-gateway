@@ -7,7 +7,7 @@ namespace PaymentGateway.Domain.Models.Card
         public const int MinimumLength = 2;
         public const int MaximumLength = 40;
 
-        public string Value { get; private set; }
+        private string value { get; init; } = string.Empty;
 
         public static CardHolder Create(string cardHolder)
         {
@@ -15,8 +15,12 @@ namespace PaymentGateway.Domain.Models.Card
 
             return new CardHolder
             {
-                Value = cardHolder
+                value = cardHolder
             };
         }
+
+        public string Value => value;
+
+        public static CardHolder Empty => new();
     }
 }

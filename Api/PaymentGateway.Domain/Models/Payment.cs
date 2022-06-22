@@ -5,18 +5,18 @@ namespace PaymentGateway.Domain.Models
 {
     public class Payment
     {
-        public Amount Amount { get; init; }
+        public Amount Amount { get; init; } = Amount.Empty;
 
-        public DateTime ProcessedOn { get; set; }
+        public DateTime ProcessedOn { get; set; } = new();
 
-        public ISOCurrency Currency { get; init; }
+        public ISOCurrency Currency { get; init; } = ISOCurrency.Empty;
 
-        public MerchantReference MerchantReference { get; init; }
+        public MerchantReference MerchantReference { get; init; } = MerchantReference.Empty;
 
-        public PaymentCard PaymentCard { get; init; }
+        public PaymentCard PaymentCard { get; init; } = PaymentCard.Empty;
 
-        public PaymentReference PaymentReference { get; init; }
+        public PaymentReference PaymentReference { get; init; } = PaymentReference.Empty;
 
-        public PaymentStatus PaymentStatus { get; set; }
+        public PaymentStatus PaymentStatus { get; set; } = PaymentStatus.None;
     }
 }

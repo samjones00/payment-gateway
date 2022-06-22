@@ -7,7 +7,7 @@ namespace PaymentGateway.Domain.Models.Card
         public const int MinimumLength = 3;
         public const int MaximumLength = 4;
 
-        public string Value { get; private set; }
+        private string value { get; init; } = string.Empty;
 
         public static CVV Create(string cvv)
         {
@@ -15,8 +15,12 @@ namespace PaymentGateway.Domain.Models.Card
 
             return new CVV
             {
-                Value = cvv
+                value = cvv
             };
         }
+
+        public string Value => value;
+
+        public static CVV Empty => new();
     }
 }

@@ -5,7 +5,8 @@ namespace PaymentGateway.Domain.Models
     public class PaymentReference
     {
         public const int Length = 36;
-        public string Value { get; private set; }
+
+        private string value { get; init; } = string.Empty;
 
         public static PaymentReference Create(string paymentReference)
         {
@@ -13,8 +14,12 @@ namespace PaymentGateway.Domain.Models
 
             return new PaymentReference
             {
-                Value = paymentReference
+                value = paymentReference
             };
         }
+
+        public string Value => value;
+
+        public static PaymentReference Empty => new();
     }
 }

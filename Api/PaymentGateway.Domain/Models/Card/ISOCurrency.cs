@@ -6,7 +6,7 @@ namespace PaymentGateway.Domain.Models.Card
     {
         public const int Length = 3;
 
-        public string Value { get; private set; }
+        private string value { get; init; } = string.Empty;
 
         public static ISOCurrency Create(string currency)
         {
@@ -14,8 +14,12 @@ namespace PaymentGateway.Domain.Models.Card
 
             return new ISOCurrency
             {
-                Value = currency.ToUpper(),
+                value = currency.ToUpper(),
             };
         }
+
+        public string Value => value;
+
+        public static ISOCurrency Empty => new();
     }
 }

@@ -2,14 +2,18 @@
 {
     public class Amount
     {
-        public decimal Value { get; private set; }
+        private decimal value { get; init; }
 
         public static Amount Create(decimal amount)
         {
             return new Amount
             {
-                Value = amount
+                value = amount
             };
         }
+
+        public decimal Value => value;
+
+        public static Amount Empty => new();
     }
 }
