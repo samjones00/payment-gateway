@@ -42,7 +42,7 @@ namespace PaymentGateway.Core.Services
 
             var response = await _httpClient.PostAsync(url, content, cancellationToken);
 
-            if (response.Content != null)
+            if (response.Content is not null)
             {
                 var json = await response.Content.ReadAsStringAsync(cancellationToken);
                 var responseModel = JsonConvert.DeserializeObject<TBankResponse>(json);

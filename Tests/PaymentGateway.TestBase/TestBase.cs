@@ -14,7 +14,7 @@ public class TestBase
 
     public static IEnumerable<string> NullOrWhiteSpaceStrings() => new List<string> { " ", "", null };
 
-    public void RunGuardClauseChecks<T>()
+    public static void RunGuardClauseChecks<T>()
     {
         var fixture = new Fixture().Customize(new AutoMoqCustomization());
 

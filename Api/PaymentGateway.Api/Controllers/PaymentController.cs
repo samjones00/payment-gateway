@@ -84,8 +84,8 @@ public class PaymentController : ControllerBase
         catch (AuthenticationException ex)
         {
             return Unauthorized(ex.Message);
-        }        
-        catch (AcquiringBankException ex)
+        }
+        catch (AcquiringBankException)
         {
             return StatusCode(StatusCodes.Status503ServiceUnavailable);
         }

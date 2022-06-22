@@ -90,13 +90,13 @@ public class GetPaymentDetailsTests : TestBase
             .Create();
 
         _mockMediator.Setup(m => m.Send(It.IsAny<PaymentDetailsQuery>(), It.IsAny<CancellationToken>()))
-            .Throws(new PaymentNotFoundException($"Payment not found.", paymentReference, merchantReference));
+            .Throws(new PaymentNotFoundException($"Payment not found", paymentReference, merchantReference));
 
         // When
         var result = await _sut.GetPaymentDetails(paymentReference);
 
         // Then
         var httpResult = result as NotFoundObjectResult;
-        httpResult.Value.Should().Be("Payment not found.");
+        httpResult.Value.Should().Be($"Payment not found. payment reference: {paymentReference}, merchant reference: {merchantReference}");
     }
 }

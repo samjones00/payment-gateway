@@ -1,4 +1,3 @@
-using System.Security.Authentication;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -55,6 +54,7 @@ public class SubmitPaymentTests : TestBase
 
         // Then
         var httpResult = response as UnauthorizedObjectResult;
+        httpResult.Value.Should().Be("Claim 'NameIdentifier' not found.");
     }
 
     [Test]

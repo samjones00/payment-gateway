@@ -6,13 +6,9 @@ namespace PaymentGateway.Domain.Exceptions
     [ExcludeFromCodeCoverage]
     public class PaymentAlreadyExistsException : Exception
     {
-        private string paymentReference;
-        private string merchantReference;
-
-        public PaymentAlreadyExistsException(string? message, string paymentReference, string merchantReference) : base(message)
+        public PaymentAlreadyExistsException(string? message, string paymentReference, string merchantReference) : base(
+            $"{message}, payment reference: {paymentReference}, merchant reference: {merchantReference}")
         {
-            this.paymentReference = paymentReference;
-            this.merchantReference = merchantReference;
         }
     }
 }

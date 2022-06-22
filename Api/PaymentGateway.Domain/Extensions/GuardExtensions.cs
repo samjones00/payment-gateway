@@ -10,7 +10,7 @@ namespace PaymentGateway.Domain.Extensions
         /// <param name="value"></param>
         /// <param name="argumentName"></param>
         /// <exception cref="ArgumentNullException"></exception>
-        public static void ThrowIfNullOrWhiteSpace(this string value, [CallerArgumentExpression("value")] string argumentName = null)
+        public static void ThrowIfNullOrWhiteSpace(this string value, [CallerArgumentExpression("value")] string? argumentName = null)
         {
             if (string.IsNullOrWhiteSpace(value))
             {
@@ -24,7 +24,7 @@ namespace PaymentGateway.Domain.Extensions
         /// <param name="value"></param>
         /// <param name="argumentName"></param>
         /// <exception cref="ArgumentException"></exception>
-        public static void ThrowIfZero(this int value, [CallerArgumentExpression("value")] string argumentName = null)
+        public static void ThrowIfZero(this int value, [CallerArgumentExpression("value")] string? argumentName = null)
         {
             if (value == Decimal.Zero)
             {

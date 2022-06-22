@@ -11,8 +11,7 @@ namespace PaymentGateway.Core.Mapping
             CreateMap<Payment, SubmitPaymentResponse>()
                 .ForMember(dest => dest.PaymentStatus, opt => opt.MapFrom(src => src.PaymentStatus))
                 .ForMember(dest => dest.PaymentReference, opt => opt.MapFrom(src => src.PaymentReference.Value))
-                .ForMember(dest => dest.ProcessedOn, opt => opt.MapFrom(src => src.ProcessedOn))
-                .ForMember(dest => dest.PaymentReference, opt => opt.MapFrom(src => src.PaymentReference.Value));
+                .ForMember(dest => dest.ProcessedOn, opt => opt.MapFrom(src => src.ProcessedOn));
         }
     }
 }

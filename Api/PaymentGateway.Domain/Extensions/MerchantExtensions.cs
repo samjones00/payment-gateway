@@ -19,7 +19,7 @@ namespace PaymentGateway.Domain.Extensions
                 throw new AuthenticationException($"Claim '{nameof(ClaimTypes.NameIdentifier)}' not found.");
             }
 
-            return httpContextAccessor.HttpContext.User.Claims.Single(typeExpression)?.Value;
+            return httpContextAccessor.HttpContext.User.Claims.Single(typeExpression).Value;
         }
     }
 }

@@ -101,7 +101,7 @@ public class ProcessPaymentTests : TestBase
         result.Should().Be(PaymentStatus.Successful);
     }
 
-    private Mock<HttpMessageHandler> CreateMockHttpMessageHandler(HttpStatusCode statusCode, HttpContent content = null)
+    private static Mock<HttpMessageHandler> CreateMockHttpMessageHandler(HttpStatusCode statusCode, HttpContent content = null)
     {
         var handlerMock = new Mock<HttpMessageHandler>(MockBehavior.Strict);
         handlerMock

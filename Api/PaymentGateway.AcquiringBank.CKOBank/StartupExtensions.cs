@@ -23,7 +23,7 @@ namespace PaymentGateway.AcquiringBank.CKO
                 .AddHttpClient<BankConnectorService<Request, Response>>(HttpClientConstants.ProcessPaymentHttpClientName, client =>
                 {
                     client.BaseAddress = new Uri(options.BaseAddress);
-                    client.ConfigureBankEndpointAuth();
+                    // Configure bank auth
                 })
                 .AddPolicyHandler(GetRetryPolicy(options));
 
@@ -46,11 +46,6 @@ namespace PaymentGateway.AcquiringBank.CKO
             });
 
             return builder;
-        }
-
-        private static void ConfigureBankEndpointAuth(this HttpClient httpClient)
-        {
-            // Configure auth for bank endpoint here
         }
 
         private static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy(AcquiringBankOptions options)

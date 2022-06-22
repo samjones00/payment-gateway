@@ -31,7 +31,7 @@ namespace PaymentGateway.Tests.Shared
             _httpClient = useInMemoryHttpClient ? SetupInMemoryHttpClient() : SetupLocalhostHttpClient();
         }
 
-        private HttpClient SetupLocalhostHttpClient()
+        private static HttpClient SetupLocalhostHttpClient()
         {
             return new HttpClient
             {
@@ -39,7 +39,7 @@ namespace PaymentGateway.Tests.Shared
             };
         }
 
-        private HttpClient SetupInMemoryHttpClient()
+        private static HttpClient SetupInMemoryHttpClient()
         {
             var webApplicationFactory = new WebApplicationFactory<Program>()
                 .WithWebHostBuilder(builder =>
