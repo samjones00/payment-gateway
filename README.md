@@ -1,6 +1,5 @@
 [![.NET](https://github.com/samjones00/payment-gateway/actions/workflows/dotnet.yml/badge.svg)](https://github.com/samjones00/payment-gateway/actions/workflows/dotnet.yml)
 
-
 # Overview
 
 The objective is to accept payments from the merchant, pass the request through different stages and return a response describing the outcome. Below is a high level flow of the process.
@@ -26,115 +25,207 @@ sequenceDiagram
 ## Requirements
 
 - Dotnet 6 SDK
-- Docker
-- Docker file sharing permissions allowing the `docker-compose` file in `.\MockBank` access to mount a volume. 
 
 ## Getting Started
 -----------------
 
-1. ### Start the mock bank
+### Running the applications
+
+1. Start the mock bank
 
     ```
-    cd .\MockBank
-    docker-compose up
+    > .\payment-gateway
+    dotnet run --project .\MockBank\PaymentGateway.AcquiringBank.MockCKOBank
     ```
-2. ### Start the application
+2. You can run the API from Visual Studio, ensuring that `PaymentGateway.Api` is set as the startup project.
+
+    Alternatively, from the command line, in another terminal window:
 
     ```
-    cd .\Api\PaymentGateway.Api
-    dotnet run
+    > .\payment-gateway
+    dotnet run --project .\Api\PaymentGateway.Api\
     ```
-3. ### Accessing the API
+
+### Accessing the API
 
 * Use Swagger UI from `https://localhost:7196/swagger`
-* Use Postman, importing the url `https://localhost:7196/swagger/v1/swagger.json`
+* Use Postman, importing the url `https://localhost:7196/swagger/v1/swagger.json`, requires setting the `baseUrl` variable.
 
-4. ### Authenticate using a bearer token
-    Copy one the JWT's from the [JSON-Web-Tokens](#JSON-Web-Tokens) section
+Authenticate using a bearer token below, click Authorize in Swagger or add the `Bearer <tokenhere>` authentication header. Below are some pre-generated tokens, without these you will receive a **`401 Unauthorized`** response.
 
-
-### Example bank responses
-
-| Payment Reference | Response |
-|-|-|
-|ba1c9df4-001e-4922-9efa-488b59850bc4 | Unsuccessful
-|Any other guid | Successful
-
-
-## JSON Web Tokens
---------
-Authentication and authorization is handled using JSON Web Tokens but due to time constraints and requirements I haven't provided a JWT issuer. However, below are some pre-generated bearer tokens which will authenticate and identify the request.
-
-## Features
-- A valid bearer token must be provided to perform any action
-- Merchants can only access payment details submitted by themselves
-
-#### Merchant: Apple
+Merchant: Apple
 
 ```
 eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo1MTM4LyIsImlhdCI6MTY1NTU4MjkxMCwiZXhwIjoxNjg3MTE4OTEwLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo1MTM4LyIsInN1YiI6IkFwcGxlIn0.TLGIHiqFuAbM7cVIJ3ZKVQ3dLi9YSzLE2BYVRqKqPhk
 ```
 
-#### Merchant: Amazon
+Merchant: Amazon
 ```
 eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo1MTM4LyIsImlhdCI6MTY1NTU4MjkxMCwiZXhwIjoxNjg3MTE4OTEwLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo1MTM4LyIsInN1YiI6IkFtYXpvbiJ9.3u77zp-pqHJdV79Lu92OxxzD6GaQ4gJK1YI_QKETA6g
+```
+
+# Requests & Responses
+
+**`400 Bad Request`**
+
+When specifying `ba1c9df4-001e-4922-9efa-488b59850bc4` as the payment reference and returning an unsuccessful response.
+
+Request
+```json
+{
+  "paymentReference": "ba1c9df4-001e-4922-9efa-488b59850bc4",
+  "amount": 12.34,
+  "currency": "gbp",
+  "cardNumber": "4111111111111111",
+  "cvv": "123",
+  "expiryDateYear": 2022,
+  "expiryDateMonth": 12,
+  "cardHolder": "s jones"
+}
+```
+Response
+```json
+{
+    "processedOn": "2022-06-23T16:55:18.5857683Z",
+    "paymentStatus": "Unsuccessful",
+    "paymentReference": "ba1c9df4-001e-4922-9efa-488b59850bc4"
+}
+```
+
+**`201 Created`**
+
+When specifying any other payment reference than above and returning a successful response.
+
+Request
+```json
+{
+  "paymentReference": "ba2c9df4-001e-4922-9efa-488b59856bd2",
+  "amount": 12.34,
+  "currency": "gbp",
+  "cardNumber": "4111111111111111",
+  "cvv": "123",
+  "expiryDateYear": 2022,
+  "expiryDateMonth": 12,
+  "cardHolder": "s jones"
+}
+```
+Response
+```json
+{
+    "processedOn": "2022-06-23T16:53:29.6963308Z",
+    "paymentStatus": "Successful",
+    "paymentReference": "ba2c9df4-001e-4922-9efa-488b59856bd2"
+}
+```
+
+**`409 Conflict`**
+
+When submitting a payment that already exists.
+
+Request
+```json
+Any request with a previously used payment reference.
+```
+Response
+```json
+"Payment already exists."
+```
+
+**`504 - Gateway Timeout`**
+
+When the mock bank is unavailable after multiple retries.
+
+Request
+```
+Any request
+```
+Response
+```json
+{
+    "status": 504,
+    "traceId": "00-c1c0d397f0ed8e835fdd39a3ea644ba2-5660b5e9909df082-00"
+}
 ```
 
 # Testing
 
 ## Unit tests
 
-Unit tests are best run through the command line, as running `dotnet test` from the command line would include integration tests as well.
+Unit tests can be run from Visual Studio, or using the command line:
+
+```
+> .\payment-gateway
+dotnet test
+```
 
 ## Integration Tests
 
-Integration tests can be run from Visual Studio, whether they run against a hosted/running payment gateway application or an in-memory one is configured in `payment-gateway\Tests\PaymentGateway.Api.IntegrationTests\acceptance.runsettings`. 
+The integration tests are configured to run in two ways. By default they run against a bank stub, however you can also run them against the mock bank application over a localhost port, ideal for testing against hosted instances. 
 
-> Ensure that the mock bank is running, see [Getting Started](#Getting-started):
+The payment gateway url used by acceptance tests is configured in `payment-gateway\Tests\PaymentGateway.Api.IntegrationTests\acceptance.runsettings`. 
 
-To run the integration tests, you can either run against the running application:
+**Running against the bank stub**
 
-1. Open a terminal window to run the payment gateway:
+This method will run the acceptance tests against the HttpClient provided by `WebApplicationFactory`, which then uses a `BankConnectorServiceStub` and doesn't make any real calls to the `PaymentGateway.AcquiringBank.MockCKOBank`.
 
-1. `CD payment-gateway\Api\PaymentGateway.Api`
+1. Run the payment gateway
+```
+> .\payment-gateway
+dotnet run  --project .\Api\PaymentGateway.Api\
+```
+2. And in another terminal window, run the tests:
+```
+> .\payment-gateway
+cd .\Tests\PaymentGateway.Api.IntegrationTests
+dotnet test
+```
 
-1. `dotnet run`
+**Running against the mock bank application**
 
-1. Open another terminal window to run the acceptance tests:
+This method makes the acceptance test call the application gateway over http, which then calls the mock bank application.
 
-1. `CD payment-gateway\Tests\PaymentGateway.Api.IntegrationTests`
-
-1. Run `dotnet test` with a parameter, this will allow the tests to run over the localhost address:  
-    **cmd**  
-    `dotnet test  -- TestRunParameters.Parameter(name=\"UseInMemoryHttpClient\", value=\"false\")`
-
-    **powershell**  
-    `dotnet test --%  -- TestRunParameters.Parameter(name=\"UseInMemoryHttpClient\", value=\"false\") `
-
-    **bash**  
-    `dotnet test -- TestRunParameters.Parameter\(name=\"UseInMemoryHttpClient\",\ value=\"false\"\)`
-
-Or run against the in-memory application
-
-1. Open a terminal window
-
-1. `CD payment-gateway\Tests\PaymentGateway.Api.IntegrationTests`
-
-1. dotnet test
+1. Run the mock bank
+```
+> .\payment-gateway
+dotnet run  --project .\MockBank\PaymentGateway.AcquiringBank.MockCKOBank
+```
+2. In another terminal window, run the payment gateway:
+```
+> .\payment-gateway
+dotnet run  --project .\Api\PaymentGateway.Api\
+```
+3. And in another terminal window, run the tests:
+```
+> .\payment-gateway
+cd .\Tests\PaymentGateway.Api.IntegrationTests
+dotnet test --%  -- TestRunParameters.Parameter(name=\"UseInMemoryHttpClient\", value=\"false\")
+```
 
 # Implementation Details
 
+## JSON Web Tokens
+
+Authentication is handled using JSON Web Tokens but due to time constraints and requirements I haven't provided a JWT issuer. However, pre-generated bearer tokens which will authenticate and identify the request can be found under [Accessing the API](#Accessing-the-API).
+
+The JWT identifer is used to identify the merchant reference.
+
+Features:
+- A valid bearer token must be provided to perform any action
+- Merchants can only access payment details submitted by themselves
+
 ## API Routing
 
-I first implemented routes using `MapPost` and `MapGet` using the minimal api format, but then I found this in the  [fluent validation documentation](https://docs.fluentvalidation.net/en/latest/aspnet.html).
+I first implemented routes using `MapPost` and `MapGet` using the Minimal API format, but then I found this in the [fluent validation documentation](https://docs.fluentvalidation.net/en/latest/aspnet.html).
 
 > Note that Minimal APIs that are part of .NET 6 don’t support automatic validation.
 
 I then re-wrote the routing in the Controller style as I wanted the request validation to be handled via the middleware.
 
-## Connecting to the Acquiring Bank 
+All routes are defined in `PaymentGateway.Domain.Constants.ApiRoutes` for maintainability.
 
-All code and configuration for calling the mock CKO bank is separated into its own `PaymentGateway.AcquiringBank.CKO` project, and is only referenced from the `PaymentGateway.Api` project using startup extensions.
+## Acquiring Bank Connector
+
+All code and configuration for calling the `PaymentGateway.AcquiringBank.MockCKOBank` is separated into its own `PaymentGateway.AcquiringBank.CKO` project, and is only referenced from the `PaymentGateway.Api` project using startup extensions.
 
 Benefits are:
 - Easy swapping out for other bank implementations
@@ -142,17 +233,23 @@ Benefits are:
 - A step closer for separating the acquiring banks into their own nuget packages for use in other applications.
 - Self contained including the configuration
 
+## Mediator
+
+I've used mediator to handle the command and query handling, in this case it's mainly used for decoupling as i'm not taking advantage of the notification benefits. I could have built on this using CQRS, but I didn't think the benefits were justifiable.
+
 ## The Mock Acquiring Bank
 
-I'm using a pre-built docker image called [mockaco](https://github.com/natenho/Mockaco/) which allows you to describe the response you want to return given a specific request.
+The mock bank (`.\MockBank\PaymentGateway.AcquiringBank.MockCKOBank`) is a very simple aspnet core 6 Web API project which returns either successful or unsuccessful responses depending on the payment reference. 
+
+Given more time I would write this to be more configurable to use json files a request/response templates.
 
 ## Persistance
 
 The payments are stored and updated using an in-memory cache, but could be swapped out for another implementation of `IRepository`.
 
-## Data security
+## Data Security
 
-I thought about adding an IRepository decorator, encrypting on add/update and decrypting on read. I decided against this as it was "out of scope", but i'm not happy with storing card details in plain text NoSql database unless there were access restrictions or some other mechanism.
+I thought about adding an IRepository decorator, encrypting on add/update and decrypting on read. I decided against this as it was "out of scope", but i'm not happy with storing card details in plain text NoSql database unless there were access restrictions or some other mechanism in place.
 
 ## Mapping
 
@@ -166,20 +263,20 @@ sequenceDiagram
     participant Bank as Bank
     Merchant->>Gateway: Command mapped to Payment Domain Model
     Gateway->>Bank: Payment Domain Model mapped to Bank Request Model
-    Bank->>Gateway: Bank Response Model mapped to 
+    Bank->>Gateway: Bank Response returned and Payment model updated 
     Gateway->>Merchant: Payment Domain Model mapped to Payment Response 
 
 ```
 
 # Extra mile bonus points
 
-- JWT Authentication and authorization
+- JWT Authentication
 - Retry policy with delay when calling the bank endpoint
 - Encapsulation of the bank connector, allowing easy replacement
 
-
 # Next Steps
 
-- Host the API behind an API management portal which would handle the authentication, rate limiting, etc
+- Host the API behind an API management portal which would handle the authentication, rate limiting, other transient faults, etc
 - Replace the In-Memory cache with a database, either using SQL Server with column-level encryption or NoSQL and access restrictions.
 - Add logging, both local plain text logging using serilog and a hosted platform such as Application Insights
+- Add telemetry to track request/response times and performance
