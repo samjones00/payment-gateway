@@ -25,7 +25,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PaymentGateway.Domain.UnitT
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PaymentGateway.Tests.Shared", "Tests\PaymentGateway.TestBase\PaymentGateway.Tests.Shared.csproj", "{62F323F1-EC17-49F2-9439-07B0B084B105}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9B5A9DD4-DE31-47C9-BC6F-1000928C757C}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ". Solution Items", ". Solution Items", "{9B5A9DD4-DE31-47C9-BC6F-1000928C757C}"
 	ProjectSection(SolutionItems) = preProject
 		README.md = README.md
 	EndProjectSection
