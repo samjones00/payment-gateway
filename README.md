@@ -27,7 +27,7 @@ sequenceDiagram
 - Dotnet 6 SDK
 
 ## Getting Started
------------------
+
 
 ### Running the applications
 
@@ -64,7 +64,12 @@ Merchant: Amazon
 eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo1MTM4LyIsImlhdCI6MTY1NTU4MjkxMCwiZXhwIjoxNjg3MTE4OTEwLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo1MTM4LyIsInN1YiI6IkFtYXpvbiJ9.3u77zp-pqHJdV79Lu92OxxzD6GaQ4gJK1YI_QKETA6g
 ```
 
-# Requests & Responses
+# Example Requests & Responses
+
+## Submit Payment
+
+- Verb: POST
+- Url: `/payment/submit`
 
 **`400 Bad Request`**
 -
@@ -118,6 +123,19 @@ Response
 }
 ```
 
+**`401 Unauthorized`**
+-
+When not providing a valid bearer token.
+
+Request
+```json
+Any request.
+```
+Response
+```json
+No content.
+```
+
 **`409 Conflict`**
 -
 When submitting a payment that already exists.
@@ -145,6 +163,60 @@ Response
     "status": 504,
     "traceId": "00-c1c0d397f0ed8e835fdd39a3ea644ba2-5660b5e9909df082-00"
 }
+```
+
+## Get Payment Details
+
+- Verb: GET
+- Url: `/payment/details/ba2c9df4-001e-4912-9efa-488b5985asd2`
+
+**`200 OK`**
+-
+When specifying an existing payment reference.
+
+Request
+```
+/payment/details/{paymentReference}
+```
+
+Response
+```json
+{
+    "processedOn": "2022-06-23T18:39:58.0807858Z",
+    "paymentReference": "ba2c9df4-001e-4912-9efa-488b5985asd2",
+    "paymentStatus": "Successful",
+    "currency": "GBP",
+    "amount": 12.34,
+    "isAuthorised": true,
+    "cardNumber": "XXXXXXXXXXXX1111"
+}
+```
+
+**`401 Unauthorized`**
+-
+When not providing a valid bearer token.
+
+Request
+```json
+Any request.
+```
+Response
+```json
+No content.
+```
+
+**`404 Not Found`**
+-
+When specifying an non-existent payment reference.
+
+Request
+```
+/payment/details/{paymentReference}
+```
+
+Response
+```json
+"Payment not found."
 ```
 
 # Testing
