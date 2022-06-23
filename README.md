@@ -67,8 +67,8 @@ eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo1MTM4LyI
 # Requests & Responses
 
 **`400 Bad Request`**
-
-When specifying `ba1c9df4-001e-4922-9efa-488b59850bc4` as the payment reference and returning an unsuccessful response.
+-
+When specifying `ba1c9df4-001e-4922-9efa-488b59850bc4` as the payment reference, unsuccessful response is returned.
 
 Request
 ```json
@@ -93,7 +93,7 @@ Response
 ```
 
 **`201 Created`**
-
+-
 When specifying any other payment reference than above and returning a successful response.
 
 Request
@@ -119,7 +119,7 @@ Response
 ```
 
 **`409 Conflict`**
-
+-
 When submitting a payment that already exists.
 
 Request
@@ -131,8 +131,8 @@ Response
 "Payment already exists."
 ```
 
-**`504 - Gateway Timeout`**
-
+**`504 Gateway Timeout`**
+-
 When the mock bank is unavailable after multiple retries.
 
 Request
@@ -162,7 +162,7 @@ dotnet test
 
 The integration tests are configured to run in two ways. By default they run against a bank stub, however you can also run them against the mock bank application over a localhost port, ideal for testing against hosted instances. 
 
-The payment gateway url used by acceptance tests is configured in `payment-gateway\Tests\PaymentGateway.Api.IntegrationTests\acceptance.runsettings`. 
+The payment gateway url used by acceptance tests is configured in [`acceptance.runsettings`](./Tests/PaymentGateway.Api.IntegrationTests/acceptance.runsettings). 
 
 **Running against the bank stub**
 
@@ -171,7 +171,7 @@ This method will run the acceptance tests against the HttpClient provided by `We
 1. Run the payment gateway
 ```
 > .\payment-gateway
-dotnet run  --project .\Api\PaymentGateway.Api\
+dotnet run --project .\Api\PaymentGateway.Api\
 ```
 2. And in another terminal window, run the tests:
 ```
@@ -187,12 +187,12 @@ This method makes the acceptance test call the application gateway over http, wh
 1. Run the mock bank
 ```
 > .\payment-gateway
-dotnet run  --project .\MockBank\PaymentGateway.AcquiringBank.MockCKOBank
+dotnet run --project .\MockBank\PaymentGateway.AcquiringBank.MockCKOBank
 ```
 2. In another terminal window, run the payment gateway:
 ```
 > .\payment-gateway
-dotnet run  --project .\Api\PaymentGateway.Api\
+dotnet run --project .\Api\PaymentGateway.Api\
 ```
 3. And in another terminal window, run the tests:
 ```
@@ -273,6 +273,8 @@ sequenceDiagram
 - JWT Authentication
 - Retry policy with delay when calling the bank endpoint
 - Encapsulation of the bank connector, allowing easy replacement
+- A Github actions CI pipeline is configured to build, and then run all unit tests.
+- Mend bolt (previously Whitesource bolt) scans the code for vulnerabilities and raises issues if detected.
 
 # Next Steps
 
@@ -280,3 +282,4 @@ sequenceDiagram
 - Replace the In-Memory cache with a database, either using SQL Server with column-level encryption or NoSQL and access restrictions.
 - Add logging, both local plain text logging using serilog and a hosted platform such as Application Insights
 - Add telemetry to track request/response times and performance
+- Update the CI pipeline to include Sonarqube or another static code analysis service.
