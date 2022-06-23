@@ -1,5 +1,39 @@
 [![.NET](https://github.com/samjones00/payment-gateway/actions/workflows/dotnet.yml/badge.svg)](https://github.com/samjones00/payment-gateway/actions/workflows/dotnet.yml)
 
+# Payment Gateway
+
+# Table of contents
+
+  - [Requirements](#requirements)
+  - [Getting Started](#getting-started)
+    - [Running the applications](#running-the-applications)
+    - [Accessing the API](#accessing-the-api)
+- [Example Requests & Responses](#example-requests--responses)
+  - [Submit Payment](#submit-payment)
+  - [**`201 Created`**](#201-created)
+  - [**`400 Bad Request`**](#400-bad-request)
+  - [**`401 Unauthorized`**](#401-unauthorized)
+  - [**`409 Conflict`**](#409-conflict)
+  - [**`504 Gateway Timeout`**](#504-gateway-timeout)
+  - [Get Payment Details](#get-payment-details)
+  - [**`200 OK`**](#200-ok)
+  - [**`401 Unauthorized`**](#401-unauthorized)
+  - [**`404 Not Found`**](#404-not-found)
+- [Testing](#testing)
+  - [Unit tests](#unit-tests)
+  - [Integration Tests](#integration-tests)
+- [Implementation Details](#implementation-details)
+  - [JSON Web Tokens](#json-web-tokens)
+  - [API Routing](#api-routing)
+  - [Acquiring Bank Connector](#acquiring-bank-connector)
+  - [Mediator](#mediator)
+  - [The Mock Acquiring Bank](#the-mock-acquiring-bank)
+  - [Persistance](#persistance)
+  - [Data Security](#data-security)
+  - [Mapping](#mapping)
+- [Extra mile bonus points](#extra-mile-bonus-points)
+- [Next Steps](#next-steps)
+
 # Overview
 
 The objective is to accept payments from the merchant, pass the request through different stages and return a response describing the outcome. Below is a high level flow of the process.
@@ -71,6 +105,32 @@ eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo1MTM4LyI
 - Verb: POST
 - Url: `/payment/submit`
 
+**`201 Created`**
+-
+When specifying any other payment reference than `ba1c9df4-001e-4922-9efa-488b59850bc4` and returning a successful response.
+
+Request
+```json
+{
+  "paymentReference": "ba2c9df4-001e-4922-9efa-488b59856bd2",
+  "amount": 12.34,
+  "currency": "gbp",
+  "cardNumber": "4111111111111111",
+  "cvv": "123",
+  "expiryDateYear": 2022,
+  "expiryDateMonth": 12,
+  "cardHolder": "s jones"
+}
+```
+Response
+```json
+{
+    "processedOn": "2022-06-23T16:53:29.6963308Z",
+    "paymentStatus": "Successful",
+    "paymentReference": "ba2c9df4-001e-4922-9efa-488b59856bd2"
+}
+```
+
 **`400 Bad Request`**
 -
 When specifying `ba1c9df4-001e-4922-9efa-488b59850bc4` as the payment reference, unsuccessful response is returned.
@@ -97,42 +157,17 @@ Response
 }
 ```
 
-**`201 Created`**
--
-When specifying any other payment reference than above and returning a successful response.
-
-Request
-```json
-{
-  "paymentReference": "ba2c9df4-001e-4922-9efa-488b59856bd2",
-  "amount": 12.34,
-  "currency": "gbp",
-  "cardNumber": "4111111111111111",
-  "cvv": "123",
-  "expiryDateYear": 2022,
-  "expiryDateMonth": 12,
-  "cardHolder": "s jones"
-}
-```
-Response
-```json
-{
-    "processedOn": "2022-06-23T16:53:29.6963308Z",
-    "paymentStatus": "Successful",
-    "paymentReference": "ba2c9df4-001e-4922-9efa-488b59856bd2"
-}
-```
 
 **`401 Unauthorized`**
 -
 When not providing a valid bearer token.
 
 Request
-```json
+```
 Any request.
 ```
 Response
-```json
+```
 No content.
 ```
 
@@ -141,11 +176,11 @@ No content.
 When submitting a payment that already exists.
 
 Request
-```json
+```
 Any request with a previously used payment reference.
 ```
 Response
-```json
+```
 "Payment already exists."
 ```
 
@@ -168,7 +203,7 @@ Response
 ## Get Payment Details
 
 - Verb: GET
-- Url: `/payment/details/ba2c9df4-001e-4912-9efa-488b5985asd2`
+- Url: `/payment/details/{paymentReference}`
 
 **`200 OK`**
 -
@@ -176,7 +211,7 @@ When specifying an existing payment reference.
 
 Request
 ```
-/payment/details/{paymentReference}
+/payment/details/ba2c9df4-001e-4912-9efa-488b5985asd2
 ```
 
 Response
@@ -197,11 +232,11 @@ Response
 When not providing a valid bearer token.
 
 Request
-```json
+```
 Any request.
 ```
 Response
-```json
+```
 No content.
 ```
 
@@ -211,11 +246,11 @@ When specifying an non-existent payment reference.
 
 Request
 ```
-/payment/details/{paymentReference}
+/payment/details/ba2c9df4-001e-4912-9efa-488b5985asd2
 ```
 
 Response
-```json
+```
 "Payment not found."
 ```
 
