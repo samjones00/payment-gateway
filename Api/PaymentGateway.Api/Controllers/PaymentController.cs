@@ -87,40 +87,25 @@ public class PaymentController : ControllerBase
             return Ok(response);
         });
     }
-
+    
     private async Task<IActionResult> Handle(Func<Task<IActionResult>> func)
     {
         try
         {
             return await func.Invoke();
         }
-        catch (ArgumentException ex)
+        catch (Exception ex)
         {
-            return BadRequest(ex.Message);
-        }
-        catch (AuthenticationException ex)
-        {
-            return Unauthorized(ex.Message);
-        }
-        catch (PaymentNotFoundException ex)
-        {
-            return NotFound(ex.Message);
-        }
-        catch (PaymentAlreadyExistsException ex)
-        {
-            return Conflict(ex.Message);
-        }
-        catch (AcquiringBankException)
-        {
-            return StatusCode(StatusCodes.Status503ServiceUnavailable);
-        }
-        catch (HttpRequestException ex)
-        {
-            return StatusCode(StatusCodes.Status504GatewayTimeout);
-        }
-        catch (Exception)
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError);
+            return ex switch
+            {
+                ArgumentNullException _ => BadRequest(ex.Message),
+                AuthenticationException _ => Unauthorized(ex.Message),
+                PaymentNotFoundException _ => NotFound(ex.Message),
+                PaymentAlreadyExistsException _ => Conflict(ex.Message),
+                AcquiringBankException _ => StatusCode(StatusCodes.Status503ServiceUnavailable),
+                HttpRequestException _ => StatusCode(StatusCodes.Status504GatewayTimeout),
+                _ => StatusCode(StatusCodes.Status500InternalServerError),
+            };
         }
     }
 }
