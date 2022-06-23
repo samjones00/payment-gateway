@@ -28,7 +28,7 @@
   - [Acquiring Bank Connector](#acquiring-bank-connector)
   - [Mediator](#mediator)
   - [The Mock Acquiring Bank](#the-mock-acquiring-bank)
-  - [Data Persistence](#Data-persistence)
+  - [Data Storage](#Data-storage)
   - [Data Security](#data-security)
   - [Mapping](#mapping)
 - [Extra mile bonus points](#extra-mile-bonus-points)
@@ -350,7 +350,7 @@ The mock bank (`.\MockBank\PaymentGateway.AcquiringBank.MockCKOBank`) is a very 
 
 Given more time I would write this to be more configurable to use json files a request/response templates.
 
-## Data Persistence
+## Data Storage
 
 The payments are stored and updated using an in-memory cache, but could be swapped out for another implementation of `IRepository`.
 
