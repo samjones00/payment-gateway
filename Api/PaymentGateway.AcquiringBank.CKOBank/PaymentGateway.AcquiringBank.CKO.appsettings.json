@@ -1,8 +1,8 @@
 {
   "AcquiringBankOptions": {
-    "BaseAddress": "http://localhost:5000",
-    "PaymentEndpoint": "/process/PaymentReference",
-    "RetryWaitTimeInSeconds": 2,
+    "BaseAddress": "https://localhost:5000",
+    "PaymentEndpoint": "/process",
+    "RetryWaitTimeInSeconds": 1,
     "RetryCount": 5
   }
 }
