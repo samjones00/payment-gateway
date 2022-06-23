@@ -8,8 +8,7 @@ namespace PaymentGateway.Domain.Exceptions
     {
         public PaymentNotFoundException() { }
 
-        public PaymentNotFoundException(string? message, string paymentReference, string merchantReference) : base(
-            $"{message}. payment reference: {paymentReference}, merchant reference: {merchantReference}")
+        public PaymentNotFoundException(string? message) : base(message)
         {
         }
     }

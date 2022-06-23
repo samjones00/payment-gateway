@@ -47,7 +47,10 @@ public class PaymentController : ControllerBase
     [HttpPost(ApiRoutes.SubmitPayment)]
     [ProducesResponseType(typeof(SubmitPaymentResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
+    [ProducesResponseType(StatusCodes.Status503ServiceUnavailable)]
+    [ProducesResponseType(StatusCodes.Status504GatewayTimeout)]
     public async Task<IActionResult> SubmitPayment(SubmitPaymentCommand command)
     {
         return await Handle(async () =>
@@ -72,6 +75,7 @@ public class PaymentController : ControllerBase
     [HttpGet(ApiRoutes.GetPaymentDetails)]
     [ProducesResponseType(typeof(PaymentDetailsResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetPaymentDetails(string paymentReference)
     {
@@ -94,6 +98,10 @@ public class PaymentController : ControllerBase
         {
             return BadRequest(ex.Message);
         }
+        catch (AuthenticationException ex)
+        {
+            return Unauthorized(ex.Message);
+        }
         catch (PaymentNotFoundException ex)
         {
             return NotFound(ex.Message);
@@ -102,13 +110,13 @@ public class PaymentController : ControllerBase
         {
             return Conflict(ex.Message);
         }
-        catch (AuthenticationException ex)
-        {
-            return Unauthorized(ex.Message);
-        }
         catch (AcquiringBankException)
         {
             return StatusCode(StatusCodes.Status503ServiceUnavailable);
+        }
+        catch (HttpRequestException ex)
+        {
+            return StatusCode(StatusCodes.Status504GatewayTimeout);
         }
         catch (Exception)
         {

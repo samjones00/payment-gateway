@@ -20,7 +20,7 @@ namespace PaymentGateway.Core.Repositories
 
             if (!exists)
             {
-                throw new PaymentNotFoundException($"Payment not found.", paymentReference, merchantReference);
+                throw new PaymentNotFoundException($"Payment not found.");
             }
 
             return payment;
@@ -34,7 +34,7 @@ namespace PaymentGateway.Core.Repositories
 
             if (exists)
             {
-                throw new PaymentAlreadyExistsException($"Payment already exists.", paymentReference, merchantReference);
+                throw new PaymentAlreadyExistsException($"Payment already exists.");
             }
 
             _payments.Set(key, entity);
@@ -48,7 +48,7 @@ namespace PaymentGateway.Core.Repositories
 
             if (!exists)
             {
-                throw new PaymentNotFoundException($"Payment not found.", paymentReference, merchantReference);
+                throw new PaymentNotFoundException($"Payment not found.");
             }
 
             _payments.Set(key, entity);

@@ -12,8 +12,8 @@ namespace PaymentGateway.Tests.Shared
             {
                 PaymentReference = CreateStringOfLength(PaymentReference.Length),
                 Amount = 12.34m,
-                CardNumber = CreateStringOfLength(CardNumber.MinimumLength),
-                CVV = CreateStringOfLength(CVV.MinimumLength),
+                CardNumber = "4111111111111111",
+                CVV = "123",
                 MerchantReference = CreateStringOfLength(20),
                 Currency = "GBP",
                 CardHolder = "Joe Bloggs",

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using PaymentGateway.Domain.Interfaces;
-using PaymentGateway.Tests.Shared.Mocks;
+using PaymentGateway.Tests.Shared.Stubs;
 
 namespace PaymentGateway.Tests.Shared
 {
@@ -47,7 +47,7 @@ namespace PaymentGateway.Tests.Shared
                     builder.ConfigureServices(services =>
                     {
                         services.RemoveAll<IBankConnector>();
-                        services.AddTransient<IBankConnector, MockBankConnectorService>(); //replace implementation with a mock
+                        services.AddTransient<IBankConnector, BankConnectorServiceStub>(); //replace implementation with a mock
                     });
                 });
 

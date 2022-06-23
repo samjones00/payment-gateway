@@ -2,9 +2,9 @@
 using PaymentGateway.Domain.Interfaces;
 using PaymentGateway.Domain.Models;
 
-namespace PaymentGateway.Tests.Shared.Mocks
+namespace PaymentGateway.Tests.Shared.Stubs
 {
-    public class MockBankConnectorService : IBankConnector
+    public class BankConnectorServiceStub : IBankConnector
     {
         public Task<PaymentStatus> ProcessPayment(Payment payment, CancellationToken cancellationToken)
         {
