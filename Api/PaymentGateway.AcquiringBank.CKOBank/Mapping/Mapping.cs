@@ -16,7 +16,7 @@ namespace PaymentGateway.AcquiringBank.CKO.Mapping
             CreateMap<Domain.Models.PaymentCard, PaymentCard>()
                 .ForMember(dest => dest.CardNumber, opt => opt.MapFrom(src => src.CardNumber.Value))
                 .ForMember(dest => dest.CVV, opt => opt.MapFrom(src => src.CVV.Value))
-                .ForMember(dest => dest.CardHolder, opt => opt.MapFrom(src => src.CardHolder))
+                .ForMember(dest => dest.CardHolder, opt => opt.MapFrom(src => src.CardHolder.Value))
                 .ForMember(dest => dest.ExpiryDateMonth, opt => opt.MapFrom(src => src.ExpiryDate.Value.Month))
                 .ForMember(dest => dest.ExpiryDateYear, opt => opt.MapFrom(src => src.ExpiryDate.Value.Year));
         }

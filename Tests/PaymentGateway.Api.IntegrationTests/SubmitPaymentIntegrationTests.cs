@@ -36,7 +36,6 @@ public class SubmitPaymentIntegrationTests : IntegrationTestBase
 
         var command = Fakes.ValidSubmitPaymentCommand();
         command.PaymentReference = Constants.UnsuccessfulPaymentReference;
-
         var content = command.ToStringContent();
 
         // When

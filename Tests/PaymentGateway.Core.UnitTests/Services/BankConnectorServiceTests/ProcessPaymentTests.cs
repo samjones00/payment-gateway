@@ -28,7 +28,7 @@ public class ProcessPaymentTests : TestBase
         _options = Options.Create(new AcquiringBankOptions
         {
             BaseAddress = "http://localhost:1234",
-            PaymentEndpoint = "/payment/PaymentReference",
+            PaymentEndpoint = "/process/PaymentReference",
             RetryCount = 5,
             RetryWaitTimeInSeconds = 2
         });

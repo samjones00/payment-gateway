@@ -12,6 +12,10 @@ using PaymentGateway.Domain.Responses;
 
 namespace PaymentGateway.Api.Controllers;
 
+/// <summary>
+/// The controller responsible for payments
+/// </summary>
+/// <seealso cref="Microsoft.AspNetCore.Mvc.ControllerBase" />
 [ApiController]
 [Route(ApiRoutes.Path)]
 [Produces(MediaTypeNames.Application.Json)]
@@ -21,6 +25,13 @@ public class PaymentController : ControllerBase
     private readonly IMediator _mediator;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="PaymentController"/> class.
+    /// </summary>
+    /// <param name="logger"></param>
+    /// <param name="mediator"></param>
+    /// <param name="httpContextAccessor"></param>
+    /// <exception cref="ArgumentNullException"></exception>
     public PaymentController(ILogger<PaymentController> logger, IMediator mediator, IHttpContextAccessor httpContextAccessor)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -28,6 +39,11 @@ public class PaymentController : ControllerBase
         _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
     }
 
+    /// <summary>
+    /// Submits the payment.
+    /// </summary>
+    /// <param name="command">The command.</param>
+    /// <returns></returns>
     [HttpPost(ApiRoutes.SubmitPayment)]
     [ProducesResponseType(typeof(SubmitPaymentResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -48,6 +64,11 @@ public class PaymentController : ControllerBase
         });
     }
 
+    /// <summary>
+    /// Gets the payment details.
+    /// </summary>
+    /// <param name="paymentReference">The payment reference.</param>
+    /// <returns></returns>
     [HttpGet(ApiRoutes.GetPaymentDetails)]
     [ProducesResponseType(typeof(PaymentDetailsResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]

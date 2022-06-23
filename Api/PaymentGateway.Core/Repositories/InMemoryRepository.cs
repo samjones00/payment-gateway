@@ -14,18 +14,6 @@ namespace PaymentGateway.Core.Repositories
             _payments = memoryCache ?? throw new ArgumentNullException(nameof(memoryCache));
         }
 
-        public void Delete(string merchantReference, string paymentReference)
-        {
-            var (_, exists, key) = TryGet(merchantReference, paymentReference);
-
-            if (!exists)
-            {
-                throw new PaymentNotFoundException($"Payment not found.", paymentReference, merchantReference);
-            }
-
-            _payments.Remove(key);
-        }
-
         public Payment Get(string merchantReference, string paymentReference)
         {
             var (payment, exists, _) = TryGet(merchantReference, paymentReference);

@@ -7,7 +7,6 @@
       "status": "BadRequest",
       "body": {
         "Status": "Failed",
-        "Reason":"Insufficient Funds",
         "OrderReference": "ba1c9df4-001e-4922-9efa-488b59850bc4"
       }
     }

@@ -2,7 +2,7 @@ using PaymentGateway.AcquiringBank.CKO.Models;
 using PaymentGateway.Core.Services;
 using PaymentGateway.Tests.Shared;
 
-namespace SubmitPaymentHandler;
+namespace SubmitPaymentHandlerTests;
 
 public class ConstructorTests : TestBase
 {
