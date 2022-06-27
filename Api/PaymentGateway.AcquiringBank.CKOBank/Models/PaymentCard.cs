@@ -1,11 +1,11 @@
 ﻿namespace PaymentGateway.AcquiringBank.CKO.Models
 {
-    public class PaymentCard
+    public record struct PaymentCard
     {
-        public string CardHolder { get; set; } = string.Empty;
-        public string CardNumber { get; set; } = string.Empty;
-        public string CVV { get; set; } = string.Empty;
-        public int ExpiryDateMonth { get; set; }
-        public int ExpiryDateYear { get; set; }
+        public string? CardHolder { get; init; } 
+        public string? CardNumber { get; init; } 
+        public string? CVV { get; init; }
+        public int? ExpiryDateMonth { get; init; }
+        public int? ExpiryDateYear { get; init; }
     }
 }

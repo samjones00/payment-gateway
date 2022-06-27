@@ -1,8 +1,8 @@
 ﻿namespace PaymentGateway.AcquiringBank.CKO.Models
 {
-    public class Response
+    public record struct Response
     {
-        public string Status { get; set; }
-        public string OrderReference { get; set; }
+        public string? Status { get; set; }
+        public string? OrderReference { get; set; }
     }
 }

@@ -12,10 +12,6 @@ using PaymentGateway.Domain.Responses;
 
 namespace PaymentGateway.Api.Controllers;
 
-/// <summary>
-/// The controller responsible for payments
-/// </summary>
-/// <seealso cref="Microsoft.AspNetCore.Mvc.ControllerBase" />
 [ApiController]
 [Route(ApiRoutes.Path)]
 [Produces(MediaTypeNames.Application.Json)]
@@ -28,10 +24,9 @@ public class PaymentController : ControllerBase
     /// <summary>
     /// Initializes a new instance of the <see cref="PaymentController"/> class.
     /// </summary>
-    /// <param name="logger"></param>
-    /// <param name="mediator"></param>
-    /// <param name="httpContextAccessor"></param>
-    /// <exception cref="ArgumentNullException"></exception>
+    /// <param name="logger">The logger.</param>
+    /// <param name="mediator">The mediator.</param>
+    /// <param name="httpContextAccessor">The http context accessor.</param>
     public PaymentController(ILogger<PaymentController> logger, IMediator mediator, IHttpContextAccessor httpContextAccessor)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -40,10 +35,9 @@ public class PaymentController : ControllerBase
     }
 
     /// <summary>
-    /// Submits the payment.
+    /// Submits payment.
     /// </summary>
     /// <param name="command">The command.</param>
-    /// <returns></returns>
     [HttpPost(ApiRoutes.SubmitPayment)]
     [ProducesResponseType(typeof(SubmitPaymentResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -58,7 +52,8 @@ public class PaymentController : ControllerBase
             ArgumentNullException.ThrowIfNull(command);
 
             var merchantReference = _httpContextAccessor.GetMerchantReference();
-            command.MerchantReference = merchantReference;
+            command = command with { MerchantReference = merchantReference };
+
             var response = await _mediator.Send(command);
 
             return response.PaymentStatus == PaymentStatus.Successful.ToString()
@@ -68,10 +63,9 @@ public class PaymentController : ControllerBase
     }
 
     /// <summary>
-    /// Gets the payment details.
+    /// Gets payment details.
     /// </summary>
     /// <param name="paymentReference">The payment reference.</param>
-    /// <returns></returns>
     [HttpGet(ApiRoutes.GetPaymentDetails)]
     [ProducesResponseType(typeof(PaymentDetailsResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -87,7 +81,7 @@ public class PaymentController : ControllerBase
             return Ok(response);
         });
     }
-    
+
     private async Task<IActionResult> Handle(Func<Task<IActionResult>> func)
     {
         try

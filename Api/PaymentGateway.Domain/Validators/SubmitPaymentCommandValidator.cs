@@ -12,6 +12,10 @@ namespace PaymentGateway.Domain.Validators
         private const string LettersOnly = "^[A-Za-z]+$";
         private const string NumbersOnly = "^[0-9]*$";
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SubmitPaymentCommandValidator"/> class.
+        /// </summary>
+        /// <param name="dateTimeProvider">The date time provider.</param>
         public SubmitPaymentCommandValidator(IDateTimeProvider dateTimeProvider)
         {
             RuleFor(x => x.CardHolder)
@@ -40,6 +44,8 @@ namespace PaymentGateway.Domain.Validators
                 .GreaterThan(0.0m);
 
             RuleFor(x => x.PaymentReference)
+                .NotNull()
+                .NotEmpty()
                 .Length(PaymentReference.Length);
         }
     }

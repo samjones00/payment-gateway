@@ -3,16 +3,16 @@ using PaymentGateway.Domain.Responses;
 
 namespace PaymentGateway.Domain.Commands
 {
-    public class SubmitPaymentCommand : IRequest<SubmitPaymentResponse>
+    public record SubmitPaymentCommand : IRequest<SubmitPaymentResponse>
     {
-        public decimal Amount { get; set; }
-        public int ExpiryDateMonth { get; set; }
-        public int ExpiryDateYear { get; set; }
-        public string CardHolder { get; set; }
-        public string CardNumber { get; set; }
-        public string Currency { get; set; }
-        public string CVV { get; set; }
-        public string MerchantReference { get; set; }
-        public string PaymentReference { get; set; }
+        public decimal Amount { get; init; }
+        public int ExpiryDateMonth { get; init; }
+        public int ExpiryDateYear { get; init; }
+        public string CardHolder { get; init; }
+        public string CardNumber { get; init; }
+        public string Currency { get; init; }
+        public string CVV { get; init; }
+        public string MerchantReference { get; init; }
+        public string PaymentReference { get; init; }
     }
 }

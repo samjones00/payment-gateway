@@ -1,10 +1,10 @@
 ﻿namespace PaymentGateway.AcquiringBank.CKO.Models
 {
-    public class Request
+    public record struct Request
     {
-        public string PaymentReference { get; set; } = string.Empty;
-        public string MerchantReference { get; set; } = string.Empty;
-        public string Currency { get; set; } = string.Empty;
-        public PaymentCard PaymentCard { get; set; } = new();
+        public string? PaymentReference { get; init; }
+        public string? MerchantReference { get; init; } 
+        public string? Currency { get; init; } 
+        public PaymentCard? PaymentCard { get; init; } 
     }
 }

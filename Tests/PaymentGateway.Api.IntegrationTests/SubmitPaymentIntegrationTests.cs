@@ -18,7 +18,7 @@ public class SubmitPaymentIntegrationTests : IntegrationTestBase
         ApplyBearerAuthToken();
 
         var command = Fakes.ValidSubmitPaymentCommand();
-        command.PaymentReference = _fixture.Create<string>();
+        command = command with { PaymentReference = _fixture.Create<string>() };
         var content = command.ToStringContent();
 
         // When
@@ -35,7 +35,7 @@ public class SubmitPaymentIntegrationTests : IntegrationTestBase
         ApplyBearerAuthToken();
 
         var command = Fakes.ValidSubmitPaymentCommand();
-        command.PaymentReference = Constants.UnsuccessfulPaymentReference;
+        command = command with { PaymentReference = Constants.UnsuccessfulPaymentReference };
         var content = command.ToStringContent();
 
         // When
@@ -62,7 +62,7 @@ public class SubmitPaymentIntegrationTests : IntegrationTestBase
         ApplyBearerAuthToken();
 
         var command = Fakes.ValidSubmitPaymentCommand();
-        command.Amount = -12;
+        command = command with { Amount = -12 };
 
         var content = command.ToStringContent();
 
@@ -85,7 +85,7 @@ public class SubmitPaymentIntegrationTests : IntegrationTestBase
         ApplyBearerAuthToken();
 
         var command = Fakes.ValidSubmitPaymentCommand();
-        command.CardHolder = "123";
+        command = command with { CardHolder = "123" };
 
         var content = command.ToStringContent();
 
@@ -108,7 +108,7 @@ public class SubmitPaymentIntegrationTests : IntegrationTestBase
         ApplyBearerAuthToken();
 
         var command = Fakes.ValidSubmitPaymentCommand();
-        command.CardNumber = "ABC";
+        command = command with { CardNumber = "ABC" };
 
         var content = command.ToStringContent();
 
@@ -133,7 +133,7 @@ public class SubmitPaymentIntegrationTests : IntegrationTestBase
         ApplyBearerAuthToken();
 
         var command = Fakes.ValidSubmitPaymentCommand();
-        command.Currency = "123";
+        command = command with { Currency = "123" };
 
         var content = command.ToStringContent();
 
@@ -156,7 +156,7 @@ public class SubmitPaymentIntegrationTests : IntegrationTestBase
         ApplyBearerAuthToken();
 
         var command = Fakes.ValidSubmitPaymentCommand();
-        command.CVV = "ABC";
+        command = command with { CVV = "ABC" };
 
         var content = command.ToStringContent();
 
@@ -179,7 +179,7 @@ public class SubmitPaymentIntegrationTests : IntegrationTestBase
         ApplyBearerAuthToken();
 
         var command = Fakes.ValidSubmitPaymentCommand();
-        command.ExpiryDateMonth = 23;
+        command = command with { ExpiryDateMonth = 23 };
 
         var content = command.ToStringContent();
 
@@ -202,7 +202,7 @@ public class SubmitPaymentIntegrationTests : IntegrationTestBase
         ApplyBearerAuthToken();
 
         var command = Fakes.ValidSubmitPaymentCommand();
-        command.ExpiryDateYear = DateTime.Now.AddYears(-1).Year;
+        command = command with { ExpiryDateYear = DateTime.Now.AddYears(-1).Year };
 
         var content = command.ToStringContent();
 
@@ -218,6 +218,7 @@ public class SubmitPaymentIntegrationTests : IntegrationTestBase
         validationErrors.Should().Contain($"'Expiry Date Year' must be greater than or equal to '{DateTime.Now.Year}'.");
     }
 
+
     [Test]
     public async Task Given_Invalid_PaymentReference_When_Processing_Should_Return_Bad_Request()
     {
@@ -225,7 +226,7 @@ public class SubmitPaymentIntegrationTests : IntegrationTestBase
         ApplyBearerAuthToken();
 
         var command = Fakes.ValidSubmitPaymentCommand();
-        command.PaymentReference = "...";
+        command = command with { PaymentReference = "ABC" };
 
         var content = command.ToStringContent();
 
@@ -239,5 +240,30 @@ public class SubmitPaymentIntegrationTests : IntegrationTestBase
 
         validationErrors.Count().Should().Be(1);
         validationErrors.Should().Contain("'Payment Reference' must be 36 characters in length. You entered 3 characters.");
+    }
+
+    [TestCase(null, "'Payment Reference' must not be empty.")]
+    [TestCase(" ", "'Payment Reference' must not be empty.", "'Payment Reference' must be 36 characters in length. You entered 1 characters.")]
+    [TestCase("", "'Payment Reference' must not be empty.", "'Payment Reference' must be 36 characters in length. You entered 0 characters.")]
+    public async Task Given_Empty_PaymentReference_When_Processing_Should_Return_Bad_Request(string paymentReference, params string[] messages)
+    {
+        // Given
+        ApplyBearerAuthToken();
+
+        var command = Fakes.ValidSubmitPaymentCommand();
+        command = command with { PaymentReference = paymentReference };
+
+        var content = command.ToStringContent();
+
+        // When
+        var result = await _httpClient.PostAsync(ApiRoutes.SubmitPayment, content);
+
+        // Then
+        result.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+
+        var validationErrors = await result.GetValidationErrorMessages();
+
+        validationErrors.Should().BeEquivalentTo(messages);
+        validationErrors.Count().Should().Be(messages.Count());
     }
 }

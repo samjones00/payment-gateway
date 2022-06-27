@@ -24,7 +24,7 @@ namespace ValidatorTests
             _mockDateTimeProvider.Setup(x => x.UtcNow()).Returns(new DateTime(2022, 01, 01));
 
             var command = Fakes.ValidSubmitPaymentCommand();
-            command.CVV = "ABC";
+            command = command with { CVV = "ABC" };
 
             var sut = new SubmitPaymentCommandValidator(_mockDateTimeProvider.Object);
 

@@ -36,7 +36,7 @@ public class GetDetailsIntegrationTests : IntegrationTestBase
         ApplyBearerAuthToken();
 
         var command = Fakes.ValidSubmitPaymentCommand();
-        command.PaymentReference = _fixture.Create<string>();
+        command = command with { PaymentReference = _fixture.Create<string>() };
         var content = command.ToStringContent();
 
         var result = await _httpClient.PostAsync(ApiRoutes.SubmitPayment, content);
